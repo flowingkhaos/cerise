@@ -5,3 +5,4 @@ node_modules/
 .impeccable/mocks/
 .impeccable/review/
 .impeccable/config.local.json
+.impeccable/questions/
