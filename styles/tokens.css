@@ -1,0 +1,45 @@
+/* cerise — token sheet. One colour per job: red = brand field + action, sky = photography,
+   butter = the accent phrase, chrome = metadata and the editor module. */
+
+@font-face { font-family: "Roundo"; font-weight: 500; font-display: swap; src: url("/fonts/roundo-500.woff2") format("woff2"); }
+@font-face { font-family: "Roundo"; font-weight: 700; font-display: swap; src: url("/fonts/roundo-700.woff2") format("woff2"); }
+@font-face { font-family: "Bodoni Moda"; font-style: italic; font-weight: 500; font-display: swap; src: url("/fonts/bodoni-moda-italic.woff2") format("woff2"); }
+@font-face { font-family: "Azeret Mono"; font-weight: 500; font-display: swap; src: url("/fonts/azeret-mono-500.woff2") format("woff2"); }
+
+:root {
+  --rouge: #c8102e;
+  --rouge-sombre: #9e0b24;
+  --rouge-nuit: #5e0616;
+  --ciel: #6f8ef0;
+  --ciel-clair: #b4c6fb;
+  --ciel-profond: #3a52b4;
+  --beurre: #f6e27a;
+  --sable: #ead7b4;
+  --chrome: #e9e5e1;
+  --chrome-ombre: #b7b1ab;
+  --chrome-encre: #4f4845;
+  --encre: #1c1013;
+  --papier: #ffffff;
+  --rayure: #2e5fc4;
+
+  --f-display: "Roundo", ui-rounded, system-ui, sans-serif;
+  --f-accent: "Bodoni Moda", "Didot", serif;
+  --f-spec: "Azeret Mono", ui-monospace, monospace;
+
+  --t-hero: clamp(2.75rem, 1.2rem + 5.2vw, 5.5rem);
+  --t-h1: clamp(2.25rem, 1.4rem + 3vw, 3.75rem);
+  --t-h2: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --t-body: 1.1875rem;
+  --t-small: 0.9375rem;
+  --t-spec: 0.75rem;
+
+  --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-5: 1.5rem;
+  --s-6: 2rem; --s-7: 3rem; --s-8: 4.5rem; --s-9: 7rem;
+
+  --r-pill: 999px;
+  --r-module: 16px;
+  --ombre-module: 0 18px 44px rgb(94 6 22 / 0.35);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::selection { background: var(--beurre); color: var(--encre); }

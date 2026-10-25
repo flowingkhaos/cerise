@@ -12,3 +12,16 @@ Generated 2026-10-25 with `google/gemini-3.1-flash-image` through OpenRouter, on
 | `exporter.webp` | A bundle of blank white index cards tied with a red satin ribbon, resting in a woven straw beach bag on bright sand, a handful of glossy red cherries spilling beside it. | 6.73¢ |
 | `service.webp` | Close-up of an esthetician's hands with red nail polish rolling a white towel on a treatment bed, bright stripes of sunlight from window blinds across the hands and towel; no face visible. | 6.73¢ |
 | `vitrine.webp` | A small beauty salon shopfront on a sunny Montreal street with a red and white striped awning, potted red geraniums by the door, a deep blue sky; the window glass reflects the street; no readable signage. | 6.87¢ |
+
+## Fonts
+
+Self-hosted in `static/fonts/`, all under the SIL Open Font License 1.1 (redistribution allowed;
+the licence travels in each file's metadata):
+
+- **Roundo** 500 and 700 — display and interface. Source: Fontshare.
+- **Bodoni Moda** italic 500 — the one accent phrase per title. Source: Google Fonts.
+- **Azeret Mono** 500 — spec lines. Source: Fontshare.
+
+## Post covers
+
+Drawn in CSS (`styles/covers.css`): no image files, no generation, no third-party art.
