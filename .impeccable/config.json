@@ -13,31 +13,13 @@
         "reason": "direction contract: hero photo plate is full-bleed and hard-cropped by design"
       },
       {
-        "rule": "repeating-stripes-gradient",
-        "value": "*",
-        "files": [
-          "styles/covers.css"
-        ],
-        "createdAt": "2026-10-25T05:46:13.899Z",
-        "reason": "CSS covers per operator 2026-10-25; the stripes are the beach towel itself (Lemon poster reference), the subject's world"
-      },
-      {
         "rule": "italic-serif-display",
         "value": "*",
         "files": [
           "design/preview.html"
         ],
         "createdAt": "2026-10-25T05:46:23.827Z",
-        "reason": "operator brief 2026-10-25: editorial magazine accent; italic Bodoni is the accent phrase only, display face is Roundo; headline approved by operator"
-      },
-      {
-        "rule": "repeating-stripes-gradient",
-        "value": "*",
-        "files": [
-          "design/preview.html"
-        ],
-        "createdAt": "2026-10-25T05:46:24.083Z",
-        "reason": "CSS covers per operator 2026-10-25; the stripes are the beach towel itself (Lemon poster reference) rendered in the preview"
+        "reason": "operator brief 2026-10-25: editorial accent; the italic is Sentient (operator pick, flowingkhaos title face) on the accent phrase only; display face is Roundo"
       }
     ]
   }

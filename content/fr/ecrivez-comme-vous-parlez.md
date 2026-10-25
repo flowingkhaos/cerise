@@ -3,7 +3,8 @@ title: "Écrivez comme vous *parlez à vos clientes*."
 slug: ecrivez-comme-vous-parlez
 excerpt: "L’éditeur de cerise tient sur une ligne : vous tapez, il met en forme. Pas de menus à fouiller entre deux rendez-vous."
 topics: [ecrire, editeur]
-cover: rouge
+cover: /img/posts/ecrivez-comme-vous-parlez.webp
+coverAlt: "Gros plan sur une bouche qui applique un rouge à lèvres rouge vif, fond violet"
 number: 6
 publishedAt: 2026-10-24
 author: Luke Sidney

@@ -3,7 +3,8 @@ title: "Une photo, *une légende*."
 slug: une-photo-une-legende
 excerpt: "Une image sans légende, c’est une vitrine sans étiquette. Le composant Figure les garde ensemble."
 topics: [ecrire, outils]
-cover: soleil
+cover: /img/posts/une-photo-une-legende.webp
+coverAlt: "Une main manucurée posée sur une fourrure rouge"
 number: 3
 publishedAt: 2026-10-12
 author: Luke Sidney

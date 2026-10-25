@@ -3,7 +3,8 @@ title: "Vos mots vous *appartiennent*."
 slug: vos-mots-vous-appartiennent
 excerpt: "Tout ce que vous écrivez dans cerise s’exporte en texte simple, lisible partout. Vous partez quand vous voulez, avec tout."
 topics: [outils]
-cover: vernis
+cover: /img/posts/vos-mots-vous-appartiennent.webp
+coverAlt: "Des mains aux ongles graphiques sur du papier jaune, rouge et noir"
 number: 2
 publishedAt: 2026-10-08
 author: Luke Sidney

@@ -4,17 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>cerise — le blogue des pros de la beauté</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@401&display=swap">
 <link rel="stylesheet" href="/styles/tokens.css">
-<link rel="stylesheet" href="/styles/covers.css">
 <style>
 * { box-sizing: border-box; margin: 0; }
-html { background: var(--rouge); color: var(--encre); font-family: var(--f-display); font-weight: 500; -webkit-font-smoothing: antialiased; }
+html { background: var(--rouge); color: var(--encre); font-family: var(--f-text); -webkit-font-smoothing: antialiased; }
 body { background: var(--papier); }
 a { color: inherit; text-decoration: none; }
-a:focus-visible, button:focus-visible { outline: 3px solid var(--beurre); outline-offset: 3px; border-radius: 4px; }
-em.accent { font-family: var(--f-accent); font-style: italic; font-weight: 500; letter-spacing: -0.01em; }
-.spec { font-family: var(--f-spec); font-size: var(--t-spec); letter-spacing: 0.12em; text-transform: uppercase; }
-.pill { display: inline-flex; align-items: center; gap: var(--s-3); min-height: 3.25rem; padding: 0 var(--s-6); border-radius: var(--r-pill); font-weight: 700; font-size: 1.125rem; transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out); }
+img { display: block; max-width: 100%; height: auto; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--beurre); outline-offset: 3px; }
+h1, h2, h3, .marque, .pill, .barre nav, .pied nav { font-family: var(--f-display); }
+em.accent { font-family: var(--f-accent); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+.spec { font-size: var(--t-spec); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.photo { width: 100%; height: 100%; object-fit: cover; }
+.pill { display: inline-flex; align-items: center; gap: var(--s-3); min-height: 3.25rem; padding: 0 var(--s-6); border-radius: var(--r-pill); font-weight: 700; font-size: 1.125rem; transition: transform 0.4s var(--ease-out); }
 .pill:hover { transform: translateY(-2px); }
 .pill:active { transform: translateY(0); }
 .pill .fleche { transition: transform 0.4s var(--ease-out); }
@@ -22,46 +27,44 @@ em.accent { font-family: var(--f-accent); font-style: italic; font-weight: 500; 
 
 /* ---------- la vitrine : la photo du dernier article + le présentoir ---------- */
 .vitrine { display: grid; grid-template-columns: minmax(0, 2fr) minmax(22rem, 1fr); min-height: min(100svh, 62rem); background: var(--rouge); }
-.une { position: relative; color: var(--papier); display: flex; flex-direction: column; justify-content: space-between; padding: var(--s-6) clamp(1.25rem, 3vw, 3rem) clamp(2rem, 5vw, 4rem); overflow: hidden; }
-.une > .cover { position: absolute; inset: 0; aspect-ratio: auto; z-index: 0; --sol-x: 72%; --sol-y: 26%; }
-.une::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 10rem; background: linear-gradient(rgb(34 44 128 / 0.4), transparent); z-index: 0; pointer-events: none; }
-.une > .cover > i:nth-child(2) { left: 52%; top: 76%; width: 58%; }
-.une > .cover > i:nth-child(3) { left: 70%; top: 86%; width: 40%; }
-.une > .cover > i:nth-child(1) { left: 64%; top: 7%; width: 15%; height: 45%; animation: monte 1.6s var(--ease-out) both; }
-@keyframes monte { from { transform: translateY(6%) rotate(-12deg); } to { transform: translateY(0) rotate(-12deg); } }
-.barre { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); }
+.une { position: relative; color: var(--papier); display: flex; flex-direction: column; justify-content: space-between; padding: var(--s-6) clamp(1.25rem, 3vw, 3rem) clamp(2rem, 5vw, 4rem); overflow: hidden; isolation: isolate; }
+.une > .photo { position: absolute; inset: 0; z-index: -2; object-position: 58% 45%; animation: approche 1.8s var(--ease-out) both; }
+@keyframes approche { from { transform: scale(1.06); } to { transform: scale(1); } }
+.une::before { content: ""; position: absolute; inset: 0; z-index: -1; background:
+  linear-gradient(180deg, rgb(28 16 19 / 0.45) 0%, transparent 22%),
+  linear-gradient(0deg, rgb(28 16 19 / 0.78) 0%, rgb(28 16 19 / 0.45) 34%, transparent 62%); }
+.barre { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); }
 .marque { font-weight: 700; font-size: 2.25rem; letter-spacing: -0.03em; line-height: 1; }
 .marque span { color: var(--rouge); }
-.une .marque span { color: var(--beurre); }
+.une .marque span, .pied .marque span { color: var(--beurre); }
 .barre nav { display: flex; gap: clamp(1rem, 2vw, 2rem); font-weight: 700; font-size: 1.125rem; }
 .barre nav a { padding: var(--s-2) 0; border-bottom: 2px solid transparent; }
 .barre nav a:hover { border-bottom-color: currentColor; }
-.une-texte { position: relative; z-index: 1; max-width: 44rem; }
+.une-texte { max-width: 44rem; }
 .une h1 { font-weight: 700; font-size: var(--t-hero); line-height: 0.98; letter-spacing: -0.03em; text-wrap: balance; }
 .une h1 em.accent { color: var(--beurre); }
-.une .spec { margin-top: var(--s-5); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); color: rgb(255 250 246 / 0.92); }
+.une .spec { margin-top: var(--s-5); display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
 .allume { display: inline-flex; align-items: center; gap: 0.5em; padding: 0.35em 0.8em; border-radius: var(--r-pill); background: var(--beurre); color: var(--rouge-nuit); }
 .allume::before { content: ""; width: 0.5em; height: 0.5em; border-radius: 50%; background: var(--rouge); }
-.une .pill { margin-top: var(--s-6); background: var(--papier); color: var(--rouge); box-shadow: 0 14px 30px rgb(26 30 90 / 0.3); }
+.une .pill { margin-top: var(--s-6); background: var(--papier); color: var(--rouge); }
 
-.presentoir { display: flex; flex-direction: column; padding: var(--s-6) clamp(1.25rem, 2.6vw, 2.5rem) var(--s-6); color: var(--papier); background: var(--rouge); }
+.presentoir { display: flex; flex-direction: column; padding: var(--s-6) clamp(1.25rem, 2.6vw, 2.5rem); color: var(--papier); background: var(--rouge); }
 .presentoir h2 { font-weight: 700; font-size: var(--t-h2); letter-spacing: -0.02em; margin-bottom: var(--s-4); }
-.fente { display: grid; grid-template-columns: 6rem 1fr; gap: var(--s-4); align-items: center; padding: var(--s-4) 0; border-top: 1px solid rgb(255 250 246 / 0.3); }
-.fente .cover { --cover-ratio: 1; width: 6rem; }
-.fente .no { font-family: var(--f-accent); font-style: italic; font-size: 1.5rem; color: var(--beurre); line-height: 1; }
+.fente { display: grid; grid-template-columns: 6rem 1fr; gap: var(--s-4); align-items: center; padding: var(--s-4) 0; border-top: 1px solid rgb(255 255 255 / 0.3); }
+.fente img { width: 6rem; aspect-ratio: 1; object-fit: cover; }
+.fente .no { font-weight: 700; font-size: 1.125rem; color: var(--beurre); font-variant-numeric: tabular-nums; }
 .fente h3 { font-weight: 700; font-size: 1.25rem; line-height: 1.12; letter-spacing: -0.01em; margin-top: var(--s-1); }
-.fente h3 em.accent { font-weight: 500; }
 .fente .spec { margin-top: var(--s-2); }
 .fente:hover h3 { text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 2px; }
 
-.essai { margin-top: auto; border-radius: var(--r-module); overflow: hidden; background: linear-gradient(180deg, #fbfaf8, var(--chrome)); color: var(--encre); box-shadow: var(--ombre-module); }
-.essai img { display: block; width: 100%; height: 8.5rem; object-fit: cover; object-position: 50% 62%; }
+.essai { margin-top: auto; background: linear-gradient(180deg, #fbfaf8, var(--chrome)); color: var(--encre); box-shadow: var(--ombre-module); }
+.essai img { width: 100%; height: 8.5rem; object-fit: cover; object-position: 50% 62%; }
 .essai-corps { padding: var(--s-5); }
 .essai h3 { font-weight: 700; font-size: 1.5rem; color: var(--rouge); letter-spacing: -0.02em; }
-.essai p { margin-top: var(--s-2); font-size: var(--t-small); line-height: 1.45; color: var(--chrome-encre); }
-.essai dl { margin: var(--s-4) 0; display: grid; grid-template-columns: auto 1fr; gap: var(--s-1) var(--s-4); font-family: var(--f-spec); font-size: 0.875rem; }
+.essai p { margin-top: var(--s-2); font-size: var(--t-small); line-height: 1.5; color: var(--chrome-encre); }
+.essai dl { margin: var(--s-4) 0; display: grid; grid-template-columns: auto 1fr; gap: var(--s-1) var(--s-4); font-size: 0.9375rem; }
 .essai dt { color: var(--chrome-encre); }
-.essai dd { font-weight: 500; color: var(--encre); }
+.essai dd { font-weight: 600; }
 .essai .pill { background: var(--rouge); color: var(--papier); }
 
 /* ---------- le sommaire : l'accent magazine ---------- */
@@ -69,35 +72,33 @@ em.accent { font-family: var(--f-accent); font-style: italic; font-weight: 500; 
 .sommaire-tete { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--s-5); padding-bottom: var(--s-5); border-bottom: 3px solid var(--encre); }
 .sommaire-tete h2 { font-weight: 700; font-size: var(--t-h1); letter-spacing: -0.03em; line-height: 1; }
 .themes { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-.themes a { padding: 0.45rem 0.95rem; border-radius: var(--r-pill); border: 1.5px solid var(--encre); font-weight: 700; font-size: 0.9375rem; transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out); }
+.themes a { padding: 0.45rem 0.95rem; border-radius: var(--r-pill); border: 1.5px solid var(--encre); font-weight: 600; font-size: 0.9375rem; transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out); }
 .themes a:hover, .themes a[aria-current="page"] { background: var(--encre); color: var(--papier); }
-.ligne { display: grid; grid-template-columns: 7rem minmax(0, 1fr) 9rem; gap: var(--s-6); align-items: center; padding: var(--s-6) 0; border-bottom: 1px solid rgb(28 16 19 / 0.16); }
-.ligne .no { font-family: var(--f-accent); font-style: italic; font-size: 4rem; line-height: 0.9; color: var(--rouge); }
+.ligne { display: grid; grid-template-columns: 6rem minmax(0, 1fr) 10rem; gap: var(--s-6); align-items: center; padding: var(--s-6) 0; border-bottom: 1px solid rgb(28 16 19 / 0.16); }
+.ligne .no { font-weight: 700; font-size: 3.25rem; line-height: 0.9; letter-spacing: -0.03em; color: var(--rouge); font-variant-numeric: tabular-nums; }
 .ligne h3 { font-weight: 700; font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem); line-height: 1.05; letter-spacing: -0.025em; text-wrap: balance; }
 .ligne h3 em.accent { color: var(--rouge); }
-.ligne p { margin-top: var(--s-3); max-width: 60ch; font-size: 1.0625rem; line-height: 1.5; color: #4a3b3e; }
+.ligne p { margin-top: var(--s-3); max-width: 60ch; font-size: 1.0625rem; line-height: 1.55; color: #4a3b3e; }
 .ligne .spec { margin-top: var(--s-3); color: #6b5a5d; }
-.ligne .cover { width: 9rem; }
+.ligne img { width: 10rem; aspect-ratio: 4 / 5; object-fit: cover; }
 .ligne:hover h3 { text-decoration: underline; text-underline-offset: 0.14em; text-decoration-thickness: 3px; text-decoration-color: var(--rouge); }
 
 .pied { background: var(--rouge); color: var(--papier); padding: var(--s-8) clamp(1.25rem, 4vw, 3rem) var(--s-6); }
 .pied-haut { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--s-6); }
 .pied .marque { font-size: clamp(4rem, 2rem + 9vw, 10rem); letter-spacing: -0.05em; }
-.pied .marque span { color: var(--beurre); }
 .pied nav { display: flex; flex-wrap: wrap; gap: var(--s-5); font-weight: 700; font-size: 1.125rem; }
-.pied p { margin-top: var(--s-6); padding-top: var(--s-4); border-top: 1px solid rgb(255 250 246 / 0.35); font-size: var(--t-small); line-height: 1.5; max-width: 70ch; }
+.pied p { margin-top: var(--s-6); padding-top: var(--s-4); border-top: 1px solid rgb(255 255 255 / 0.35); font-size: var(--t-small); line-height: 1.5; max-width: 70ch; }
 
 @media (max-width: 960px) {
   .vitrine { grid-template-columns: 1fr; min-height: 0; }
   .une { min-height: 88svh; }
-  .une > .cover > i:nth-child(1) { left: 62%; top: 11%; width: 24%; height: 33%; }
-  .ligne .spec { letter-spacing: 0.06em; }
+  .une > .photo { object-position: 50% 40%; }
   .barre nav a:not(.garde) { display: none; }
-  .presentoir { padding-top: var(--s-6); }
   .essai { margin-top: var(--s-6); }
-  .ligne { grid-template-columns: 3.5rem minmax(0, 1fr); gap: var(--s-4); }
-  .ligne .cover { display: none; }
-  .ligne .no { font-size: 2.5rem; }
+  .ligne { grid-template-columns: 3rem minmax(0, 1fr); gap: var(--s-4); }
+  .ligne img { display: none; }
+  .ligne .no { font-size: 2rem; }
+  .ligne .spec { letter-spacing: 0.06em; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
@@ -106,7 +107,7 @@ em.accent { font-family: var(--f-accent); font-style: italic; font-weight: 500; 
 <main>
   <section class="vitrine">
     <article class="une">
-      <div class="cover cover--rouge" role="img" aria-label="Un rouge à lèvres brillant tenu contre un ciel d’été"><i></i><i></i><i></i><i></i></div>
+      <img class="photo" src="/img/posts/ecrivez-comme-vous-parlez.webp" alt="Gros plan sur une bouche qui applique un rouge à lèvres rouge vif, fond violet" width="1600" height="1067" fetchpriority="high">
       <header class="barre">
         <a class="marque" href="/">cerise<span>.</span></a>
         <nav aria-label="Principale"><a href="/articles">Articles</a><a href="/themes">Thèmes</a><a class="garde" href="/en" lang="en">EN</a><a class="garde" href="/connexion">Connexion</a></nav>
@@ -121,19 +122,19 @@ em.accent { font-family: var(--f-accent); font-style: italic; font-weight: 500; 
     <aside class="presentoir" aria-labelledby="nouv">
       <h2 id="nouv">Nouveautés</h2>
       <a class="fente" href="/articles/vos-consignes-dans-un-encadre">
-        <div class="cover cover--serviette" role="img" aria-label="Deux cerises sur une serviette de plage rayée"><i></i><i></i><i></i><i></i></div>
+        <img src="/img/posts/vos-consignes-dans-un-encadre.webp" alt="Une esthéticienne applique un masque au pinceau sur le visage d’une cliente" width="1067" height="1600" loading="lazy">
         <div><div class="no">N° 05</div><h3>Vos consignes, <em class="accent">dans un encadré</em>.</h3><p class="spec">2 min · Encadré</p></div>
       </a>
       <a class="fente" href="/articles/en-un-clin-d-oeil">
-        <div class="cover cover--cerises" role="img" aria-label="Deux cerises suspendues sur fond jaune beurre"><i></i><i></i><i></i><i></i></div>
+        <img src="/img/posts/en-un-clin-d-oeil.webp" alt="Une femme passe un rouleau de jade sous son œil" width="1067" height="1600" loading="lazy">
         <div><div class="no">N° 04</div><h3>Pourquoi cette page s’affiche <em class="accent">en un clin d’œil</em>.</h3><p class="spec">2 min · Vitesse</p></div>
       </a>
       <a class="fente" href="/articles/une-photo-une-legende">
-        <div class="cover cover--soleil" role="img" aria-label="Un soleil bas sur une mer bleue, ciel rouge"><i></i><i></i><i></i><i></i></div>
+        <img src="/img/posts/une-photo-une-legende.webp" alt="Une main manucurée posée sur une fourrure rouge" width="1067" height="1600" loading="lazy">
         <div><div class="no">N° 03</div><h3>Une photo, <em class="accent">une légende</em>.</h3><p class="spec">2 min · Figure</p></div>
       </a>
       <div class="essai">
-        <img src="/img/service.webp" alt="Les mains d’une esthéticienne aux ongles rouges roulent une serviette blanche au soleil" width="928" height="1152">
+        <img src="/img/service.webp" alt="Les mains d’une esthéticienne aux ongles rouges roulent une serviette blanche au soleil" width="928" height="1152" loading="lazy">
         <div class="essai-corps">
           <h3>Essayez l’éditeur</h3>
           <p>Le compte visiteur ouvre tout l’espace d’administration. Écrivez, publiez : rien n’est enregistré.</p>
@@ -149,12 +150,12 @@ em.accent { font-family: var(--f-accent); font-style: italic; font-weight: 500; 
       <h2 id="som">Tous les articles</h2>
       <nav class="themes" aria-label="Thèmes"><a href="/themes/ecrire">Écrire</a><a href="/themes/editeur">Éditeur</a><a href="/themes/outils">Outils</a><a href="/themes/vitesse">Vitesse</a><a href="/themes/demo">Démo</a></nav>
     </div>
-    <a class="ligne" href="/articles/ecrivez-comme-vous-parlez"><div class="no">06</div><div><h3>Écrivez comme vous <em class="accent">parlez à vos clientes</em>.</h3><p>L’éditeur de cerise tient sur une ligne : vous tapez, il met en forme. Pas de menus à fouiller entre deux rendez-vous.</p><p class="spec">24 oct. 2026 · 2 min · Écrire</p></div><div class="cover cover--rouge" role="img" aria-label="Un rouge à lèvres contre le ciel"><i></i><i></i><i></i><i></i></div></a>
-    <a class="ligne" href="/articles/vos-consignes-dans-un-encadre"><div class="no">05</div><div><h3>Vos consignes, <em class="accent">dans un encadré</em>.</h3><p>Les politiques d’annulation et les rappels pratiques se perdent au milieu d’un texte. Un encadré les met là où l’œil tombe.</p><p class="spec">20 oct. 2026 · 2 min · Outils</p></div><div class="cover cover--serviette" role="img" aria-label="Deux cerises sur une serviette rayée"><i></i><i></i><i></i><i></i></div></a>
-    <a class="ligne" href="/articles/en-un-clin-d-oeil"><div class="no">04</div><div><h3>Pourquoi cette page s’affiche <em class="accent">en un clin d’œil</em>.</h3><p>Un article de cerise est préparé une seule fois, au moment où vous l’enregistrez. Ensuite, le lire ne coûte presque rien.</p><p class="spec">16 oct. 2026 · 2 min · Vitesse</p></div><div class="cover cover--cerises" role="img" aria-label="Deux cerises sur fond jaune"><i></i><i></i><i></i><i></i></div></a>
-    <a class="ligne" href="/articles/une-photo-une-legende"><div class="no">03</div><div><h3>Une photo, <em class="accent">une légende</em>.</h3><p>Une image sans légende, c’est une vitrine sans étiquette. Le composant Figure les garde ensemble.</p><p class="spec">12 oct. 2026 · 2 min · Écrire</p></div><div class="cover cover--soleil" role="img" aria-label="Un soleil bas sur la mer"><i></i><i></i><i></i><i></i></div></a>
-    <a class="ligne" href="/articles/vos-mots-vous-appartiennent"><div class="no">02</div><div><h3>Vos mots vous <em class="accent">appartiennent</em>.</h3><p>Tout ce que vous écrivez dans cerise s’exporte en texte simple, lisible partout. Vous partez quand vous voulez, avec tout.</p><p class="spec">8 oct. 2026 · 2 min · Outils</p></div><div class="cover cover--vernis" role="img" aria-label="Un flacon de vernis rouge sur fond chromé"><i></i><i></i><i></i><i></i></div></a>
-    <a class="ligne" href="/articles/essayez-tout-rien-ne-casse"><div class="no">01</div><div><h3>Essayez tout, <em class="accent">rien ne casse</em>.</h3><p>Le compte visiteur ouvre tout l’espace d’administration. Vous pouvez écrire, modifier, publier : rien n’est enregistré.</p><p class="spec">4 oct. 2026 · 2 min · Démo</p></div><div class="cover cover--miroir" role="img" aria-label="Un poudrier ouvert sur une serviette rouge et blanche"><i></i><i></i><i></i><i></i></div></a>
+    <a class="ligne" href="/articles/ecrivez-comme-vous-parlez"><div class="no">06</div><div><h3>Écrivez comme vous <em class="accent">parlez à vos clientes</em>.</h3><p>L’éditeur de cerise tient sur une ligne : vous tapez, il met en forme. Pas de menus à fouiller entre deux rendez-vous.</p><p class="spec">24 oct. 2026 · 2 min · Écrire</p></div><img src="/img/posts/ecrivez-comme-vous-parlez.webp" alt="" loading="lazy"></a>
+    <a class="ligne" href="/articles/vos-consignes-dans-un-encadre"><div class="no">05</div><div><h3>Vos consignes, <em class="accent">dans un encadré</em>.</h3><p>Les politiques d’annulation et les rappels pratiques se perdent au milieu d’un texte. Un encadré les met là où l’œil tombe.</p><p class="spec">20 oct. 2026 · 2 min · Outils</p></div><img src="/img/posts/vos-consignes-dans-un-encadre.webp" alt="" loading="lazy"></a>
+    <a class="ligne" href="/articles/en-un-clin-d-oeil"><div class="no">04</div><div><h3>Pourquoi cette page s’affiche <em class="accent">en un clin d’œil</em>.</h3><p>Un article de cerise est préparé une seule fois, au moment où vous l’enregistrez. Ensuite, le lire ne coûte presque rien.</p><p class="spec">16 oct. 2026 · 2 min · Vitesse</p></div><img src="/img/posts/en-un-clin-d-oeil.webp" alt="" loading="lazy"></a>
+    <a class="ligne" href="/articles/une-photo-une-legende"><div class="no">03</div><div><h3>Une photo, <em class="accent">une légende</em>.</h3><p>Une image sans légende, c’est une vitrine sans étiquette. Le composant Figure les garde ensemble.</p><p class="spec">12 oct. 2026 · 2 min · Écrire</p></div><img src="/img/posts/une-photo-une-legende.webp" alt="" loading="lazy"></a>
+    <a class="ligne" href="/articles/vos-mots-vous-appartiennent"><div class="no">02</div><div><h3>Vos mots vous <em class="accent">appartiennent</em>.</h3><p>Tout ce que vous écrivez dans cerise s’exporte en texte simple, lisible partout. Vous partez quand vous voulez, avec tout.</p><p class="spec">8 oct. 2026 · 2 min · Outils</p></div><img src="/img/posts/vos-mots-vous-appartiennent.webp" alt="" loading="lazy"></a>
+    <a class="ligne" href="/articles/essayez-tout-rien-ne-casse"><div class="no">01</div><div><h3>Essayez tout, <em class="accent">rien ne casse</em>.</h3><p>Le compte visiteur ouvre tout l’espace d’administration. Vous pouvez écrire, modifier, publier : rien n’est enregistré.</p><p class="spec">4 oct. 2026 · 2 min · Démo</p></div><img src="/img/posts/essayez-tout-rien-ne-casse.webp" alt="" loading="lazy"></a>
   </section>
 </main>
 <footer class="pied">
@@ -162,7 +163,7 @@ em.accent { font-family: var(--f-accent); font-style: italic; font-weight: 500; 
     <a class="marque" href="/">cerise<span>.</span></a>
     <nav aria-label="Pied de page"><a href="/articles">Articles</a><a href="/rss.xml">RSS</a><a href="/connexion">Connexion</a><a href="/en" lang="en">English</a></nav>
   </div>
-  <p>Démo publique : n’entrez aucune information réelle. Personne responsable : Luke Sidney. Aucun pisteur, aucun témoin publicitaire. cerise est un logiciel libre.</p>
+  <p>Démo publique : n’entrez aucune information réelle. Personne responsable : Luke Sidney. Aucun pisteur, aucun témoin publicitaire. cerise est un logiciel libre. Photos des articles : Pexels.</p>
 </footer>
 </body>
 </html>

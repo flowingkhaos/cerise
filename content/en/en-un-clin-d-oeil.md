@@ -3,7 +3,8 @@ title: "Why this page shows up *in the blink of an eye*."
 slug: en-un-clin-d-oeil
 excerpt: "A cerise post is prepared once, when you save it. After that, reading it costs almost nothing."
 topics: [vitesse, outils]
-cover: cerises
+cover: /img/posts/en-un-clin-d-oeil.webp
+coverAlt: "A woman runs a jade roller under her eye"
 number: 4
 publishedAt: 2026-10-16
 author: Luke Sidney

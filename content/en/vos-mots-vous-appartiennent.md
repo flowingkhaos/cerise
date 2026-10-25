@@ -3,7 +3,8 @@ title: "Your words *belong to you*."
 slug: vos-mots-vous-appartiennent
 excerpt: "Everything you write in cerise exports as plain text that opens anywhere. You can leave whenever you want, with everything."
 topics: [outils]
-cover: vernis
+cover: /img/posts/vos-mots-vous-appartiennent.webp
+coverAlt: "Hands with graphic nail art on yellow, red and black paper"
 number: 2
 publishedAt: 2026-10-08
 author: Luke Sidney

@@ -3,8 +3,9 @@
 
 @font-face { font-family: "Roundo"; font-weight: 500; font-display: swap; src: url("/fonts/roundo-500.woff2") format("woff2"); }
 @font-face { font-family: "Roundo"; font-weight: 700; font-display: swap; src: url("/fonts/roundo-700.woff2") format("woff2"); }
-@font-face { font-family: "Bodoni Moda"; font-style: italic; font-weight: 500; font-display: swap; src: url("/fonts/bodoni-moda-italic.woff2") format("woff2"); }
-@font-face { font-family: "Azeret Mono"; font-weight: 500; font-display: swap; src: url("/fonts/azeret-mono-500.woff2") format("woff2"); }
+@font-face { font-family: "Figtree"; font-weight: 400 700; font-display: swap; src: url("/fonts/figtree.woff2") format("woff2"); }
+/* Sentient (the accent italic) is not in this repo: its ITF licence forbids public redistribution.
+   Pages load it from Fontshare: <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@401&display=swap"> */
 
 :root {
   --rouge: #c8102e;
@@ -23,8 +24,8 @@
   --rayure: #2e5fc4;
 
   --f-display: "Roundo", ui-rounded, system-ui, sans-serif;
-  --f-accent: "Bodoni Moda", "Didot", serif;
-  --f-spec: "Azeret Mono", ui-monospace, monospace;
+  --f-accent: "Sentient", Georgia, serif;
+  --f-text: "Figtree", system-ui, sans-serif;
 
   --t-hero: clamp(2.75rem, 1.2rem + 5.2vw, 5.5rem);
   --t-h1: clamp(2.25rem, 1.4rem + 3vw, 3.75rem);
@@ -37,7 +38,7 @@
   --s-6: 2rem; --s-7: 3rem; --s-8: 4.5rem; --s-9: 7rem;
 
   --r-pill: 999px;
-  --r-module: 16px;
+  --r-module: 0;
   --ombre-module: 0 18px 44px rgb(94 6 22 / 0.35);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }

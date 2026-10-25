@@ -3,7 +3,8 @@ title: "Try everything, *nothing breaks*."
 slug: essayez-tout-rien-ne-casse
 excerpt: "The visitor account opens the whole admin. You can write, edit and publish: nothing is saved."
 topics: [demo]
-cover: miroir
+cover: /img/posts/essayez-tout-rien-ne-casse.webp
+coverAlt: "Four lipsticks lined up like testers"
 number: 1
 publishedAt: 2026-10-04
 author: Luke Sidney

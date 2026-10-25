@@ -3,7 +3,8 @@ title: "Your house rules, *in a box*."
 slug: vos-consignes-dans-un-encadre
 excerpt: "Cancellation policies and practical reminders get lost in the middle of a paragraph. A callout puts them where the eye lands."
 topics: [ecrire, outils]
-cover: serviette
+cover: /img/posts/vos-consignes-dans-un-encadre.webp
+coverAlt: "An esthetician brushes a mask onto a client's face"
 number: 5
 publishedAt: 2026-10-20
 author: Luke Sidney

@@ -3,7 +3,8 @@ title: "Pourquoi cette page s’affiche *en un clin d’œil*."
 slug: en-un-clin-d-oeil
 excerpt: "Un article de cerise est préparé une seule fois, au moment où vous l’enregistrez. Ensuite, le lire ne coûte presque rien."
 topics: [vitesse, outils]
-cover: cerises
+cover: /img/posts/en-un-clin-d-oeil.webp
+coverAlt: "Une femme passe un rouleau de jade sous son œil"
 number: 4
 publishedAt: 2026-10-16
 author: Luke Sidney

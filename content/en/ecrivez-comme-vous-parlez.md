@@ -3,7 +3,8 @@ title: "Write the way you *talk to your clients*."
 slug: ecrivez-comme-vous-parlez
 excerpt: "cerise's editor fits on one line: you type, it formats. No menus to dig through between two appointments."
 topics: [ecrire, editeur]
-cover: rouge
+cover: /img/posts/ecrivez-comme-vous-parlez.webp
+coverAlt: "Close-up of a mouth applying a bright red lipstick, violet background"
 number: 6
 publishedAt: 2026-10-24
 author: Luke Sidney

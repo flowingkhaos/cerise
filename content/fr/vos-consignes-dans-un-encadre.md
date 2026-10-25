@@ -3,7 +3,8 @@ title: "Vos consignes, *dans un encadré*."
 slug: vos-consignes-dans-un-encadre
 excerpt: "Les politiques d’annulation et les rappels pratiques se perdent au milieu d’un texte. Un encadré les met là où l’œil tombe."
 topics: [ecrire, outils]
-cover: serviette
+cover: /img/posts/vos-consignes-dans-un-encadre.webp
+coverAlt: "Une esthéticienne applique un masque au pinceau sur le visage d’une cliente"
 number: 5
 publishedAt: 2026-10-20
 author: Luke Sidney

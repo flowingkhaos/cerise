@@ -3,7 +3,8 @@ title: "Essayez tout, *rien ne casse*."
 slug: essayez-tout-rien-ne-casse
 excerpt: "Le compte visiteur ouvre tout l’espace d’administration. Vous pouvez écrire, modifier, publier : rien n’est enregistré."
 topics: [demo]
-cover: miroir
+cover: /img/posts/essayez-tout-rien-ne-casse.webp
+coverAlt: "Quatre rouges à lèvres alignés comme des testeurs"
 number: 1
 publishedAt: 2026-10-04
 author: Luke Sidney

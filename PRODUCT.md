@@ -52,7 +52,8 @@ read and no client JavaScript. The editor writes plain markdown the owner can ex
 - No AI anywhere. No analytics or trackers. No outbound calls. Images self-hosted.
 - No image uploads in v1: covers and inline images come from the site's own image set.
 - No tables in the editor in v1.
-- The repo is public: every self-hosted font must allow redistribution (SIL OFL preferred).
+- The repo is public: every self-hosted font must allow redistribution (SIL OFL preferred). A face whose licence
+  forbids that (Sentient) is loaded from its foundry's servers instead.
 
 ## Brand Commitments
 
@@ -60,7 +61,12 @@ read and no client JavaScript. The editor writes plain markdown the owner can ex
 - Main colour: a deep, bright lipstick red (operator, 2026-10-25).
 - Every headline shown to visitors needs the operator's explicit yes, shown alone. Approved so
   far: "Écrivez comme vous *parlez à vos clientes*." (newest post, French).
-- Photographs: osi image studio, cap 75¢ for about six photos (operator, 2026-10-25).
+- Type (operator, 2026-10-25): Roundo for the wordmark and titles; Sentient italic for the one
+  accent phrase (flowingkhaos's title face, loaded from Fontshare, never in the repo); Figtree for
+  text, numbers and small lines. Bodoni Moda and Azeret Mono were rejected as jarring.
+- Cards and photos are square-cornered; buttons and topic chips stay rounded (operator, 2026-10-25).
+- Post photos are stock cosmetology and esthetics photos (Pexels), not generated and not drawn in
+  CSS (operator, 2026-10-25). Generated photos (40.5¢, OpenRouter) serve the other spots only.
 
 ## Evidence on Hand
 
