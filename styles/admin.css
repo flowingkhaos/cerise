@@ -1,0 +1,274 @@
+/* cerise — the admin (Operate). Same world, quieter: the brand lives in the details. */
+
+.admin-barre {
+  background: var(--rouge);
+  color: var(--papier);
+  padding: var(--s-4) clamp(1.25rem, 3vw, 2.5rem);
+}
+.admin-barre .marque {
+  font-size: 1.75rem;
+}
+.admin-barre nav {
+  align-items: center;
+  font-size: 1rem;
+}
+.admin-barre form {
+  display: inline;
+}
+.admin-barre button {
+  background: none;
+  border: 0;
+  padding: var(--s-2) 0;
+  font-family: var(--f-display);
+  font-weight: 700;
+  cursor: pointer;
+  color: inherit;
+  border-bottom: 2px solid transparent;
+}
+.admin-barre button:hover {
+  border-bottom-color: currentColor;
+}
+.role {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--r-pill);
+  background: var(--papier);
+  color: var(--rouge);
+  font-family: var(--f-text);
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.bandeau-visiteur {
+  background: var(--beurre);
+  color: var(--rouge-nuit);
+  padding: var(--s-3) clamp(1.25rem, 3vw, 2.5rem);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.admin {
+  width: 100%;
+  max-width: 84rem;
+  margin: 0 auto;
+  padding: var(--s-7) clamp(1.25rem, 3vw, 2.5rem) var(--s-8);
+}
+.admin-tete {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: var(--s-5);
+  padding-bottom: var(--s-5);
+  border-bottom: 3px solid var(--encre);
+}
+.admin-tete h1 {
+  font-weight: 700;
+  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  align-items: center;
+}
+.admin-actions form {
+  display: contents;
+}
+.onglets {
+  display: flex;
+  gap: var(--s-2);
+  margin-top: var(--s-5);
+}
+.onglets a {
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--encre);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+.onglets a[aria-current="page"],
+.onglets a:hover {
+  background: var(--encre);
+  color: var(--papier);
+}
+
+.table {
+  width: 100%;
+  margin-top: var(--s-5);
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+.table th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b5a5d;
+  padding: var(--s-3) var(--s-3);
+  border-bottom: 1px solid rgb(28 16 19 / 0.2);
+}
+.table td {
+  padding: var(--s-3);
+  border-bottom: 1px solid rgb(28 16 19 / 0.12);
+  vertical-align: middle;
+}
+.table tr:hover td {
+  background: #fbf7f5;
+}
+.table .vignette {
+  width: 3.5rem;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.table .titre {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.2;
+}
+.table .titre em.accent {
+  color: var(--rouge);
+}
+.table .titre a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.table .num {
+  font-variant-numeric: tabular-nums;
+  color: #6b5a5d;
+  white-space: nowrap;
+}
+.statut {
+  display: inline-flex;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-pill);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.statut--published {
+  background: var(--rouge);
+  color: var(--papier);
+}
+.statut--draft {
+  background: var(--chrome);
+  color: var(--chrome-encre);
+}
+.langue {
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* the editor page: text on the left, the publication panel on the right */
+.edition {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: var(--s-6);
+  align-items: start;
+  margin-top: var(--s-5);
+}
+.panneau {
+  position: sticky;
+  top: var(--s-5);
+  background: linear-gradient(180deg, #fbfaf8, var(--chrome));
+  padding: var(--s-5);
+  display: grid;
+  gap: var(--s-4);
+}
+.panneau::before {
+  content: "";
+  display: block;
+  height: 6px;
+  margin: calc(var(--s-5) * -1) calc(var(--s-5) * -1) 0;
+  background: var(--rouge);
+}
+.panneau .champ input,
+.panneau .champ select,
+.panneau .champ textarea {
+  min-height: 2.75rem;
+  font-size: 1rem;
+}
+.panneau textarea {
+  resize: vertical;
+}
+.couvertures {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-2);
+}
+.couvertures label {
+  position: relative;
+  cursor: pointer;
+}
+.couvertures input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+}
+.couvertures img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  outline: 3px solid transparent;
+  outline-offset: -3px;
+}
+.couvertures input:checked + img {
+  outline-color: var(--rouge);
+}
+.couvertures input:focus-visible + img {
+  outline-color: var(--beurre);
+}
+.boutons {
+  display: grid;
+  gap: var(--s-2);
+}
+.boutons .pill {
+  width: 100%;
+  min-height: 2.9rem;
+  font-size: 1rem;
+}
+.danger {
+  background: none;
+  border: 0;
+  padding: var(--s-2);
+  font-weight: 700;
+  color: var(--rouge-sombre);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+  justify-self: start;
+}
+.edition-titre {
+  width: 100%;
+  border: 0;
+  border-bottom: 2px solid rgb(28 16 19 / 0.15);
+  padding: var(--s-2) 0 var(--s-3);
+  background: transparent;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  letter-spacing: -0.03em;
+}
+.edition-titre:focus-visible {
+  outline: none;
+  border-bottom-color: var(--rouge);
+}
+
+@media (max-width: 1000px) {
+  .edition {
+    grid-template-columns: 1fr;
+  }
+  .panneau {
+    position: static;
+  }
+  .table .cacher-mobile {
+    display: none;
+  }
+}

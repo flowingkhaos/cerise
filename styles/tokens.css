@@ -1,9 +1,24 @@
 /* cerise — token sheet. One colour per job: red = brand field + action, sky = photography,
    butter = the accent phrase, chrome = metadata and the editor module. */
 
-@font-face { font-family: "Roundo"; font-weight: 500; font-display: swap; src: url("/fonts/roundo-500.woff2") format("woff2"); }
-@font-face { font-family: "Roundo"; font-weight: 700; font-display: swap; src: url("/fonts/roundo-700.woff2") format("woff2"); }
-@font-face { font-family: "Figtree"; font-weight: 400 700; font-display: swap; src: url("/fonts/figtree.woff2") format("woff2"); }
+@font-face {
+  font-family: "Roundo";
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/roundo-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Roundo";
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/roundo-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Figtree";
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/figtree.woff2") format("woff2");
+}
 /* Sentient (the accent italic) is not in this repo: its ITF licence forbids public redistribution.
    Pages load it from Fontshare: <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@401&display=swap"> */
 
@@ -34,8 +49,15 @@
   --t-small: 0.9375rem;
   --t-spec: 0.75rem;
 
-  --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem; --s-5: 1.5rem;
-  --s-6: 2rem; --s-7: 3rem; --s-8: 4.5rem; --s-9: 7rem;
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+  --s-9: 7rem;
 
   --r-pill: 999px;
   --r-module: 0;
@@ -43,4 +65,7 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-::selection { background: var(--beurre); color: var(--encre); }
+::selection {
+  background: var(--beurre);
+  color: var(--encre);
+}

@@ -1,0 +1,287 @@
+/* cerise — the article page (Read). Reading first; the world stays in the header. */
+
+.article-tete {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: end;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: var(--s-8) clamp(1.25rem, 4vw, 3rem) var(--s-7);
+}
+.article-tete h1 {
+  font-weight: 700;
+  font-size: clamp(2.5rem, 1.4rem + 3.6vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.article-tete h1 em.accent {
+  color: var(--rouge);
+}
+.article-tete .chapo {
+  margin-top: var(--s-5);
+  max-width: 46ch;
+  font-size: 1.3125rem;
+  line-height: 1.5;
+  color: #4a3b3e;
+}
+.article-tete .spec {
+  margin-top: var(--s-5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-4);
+  color: #6b5a5d;
+}
+.article-tete .spec a {
+  color: var(--rouge);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.couverture {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+/* the flip: the page and its markdown, one click apart, no script */
+.flip {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+.flip summary {
+  display: inline-flex;
+  list-style: none;
+}
+.flip summary::-webkit-details-marker {
+  display: none;
+}
+.flip .ferme {
+  display: none;
+}
+.flip[open] .ouvre {
+  display: none;
+}
+.flip[open] .ferme {
+  display: inline;
+}
+.source {
+  margin-top: var(--s-5);
+}
+.source p {
+  font-size: var(--t-small);
+  color: #6b5a5d;
+  max-width: 70ch;
+}
+.source pre {
+  margin-top: var(--s-4);
+  padding: var(--s-6);
+  background: var(--encre);
+  color: #f6efe9;
+  font: 500 0.9375rem/1.7 ui-monospace, "SF Mono", Menlo, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 80svh;
+  overflow: auto;
+}
+.flip[open] ~ .lecture {
+  display: none;
+}
+
+.lecture {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 68ch);
+  justify-content: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding: var(--s-7) clamp(1.25rem, 4vw, 3rem) var(--s-9);
+}
+.sommaire-article {
+  position: sticky;
+  top: var(--s-6);
+  align-self: start;
+  font-size: 0.9375rem;
+}
+.sommaire-article h2 {
+  font-size: 0.75rem;
+  font-family: var(--f-text);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b5a5d;
+}
+.sommaire-article ol {
+  list-style: none;
+  padding: 0;
+  margin-top: var(--s-3);
+  display: grid;
+  gap: var(--s-2);
+}
+.sommaire-article li.n3 {
+  padding-left: var(--s-4);
+}
+.sommaire-article a {
+  line-height: 1.35;
+}
+.sommaire-article a:hover {
+  color: var(--rouge);
+}
+
+/* prose */
+.corps {
+  font-size: var(--t-body);
+  line-height: 1.7;
+  color: #2a1c1f;
+}
+.corps > * + * {
+  margin-top: 1.15em;
+}
+.corps h2 {
+  margin-top: 2.2em;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--encre);
+  scroll-margin-top: var(--s-6);
+}
+.corps h3 {
+  margin-top: 1.8em;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: var(--encre);
+  scroll-margin-top: var(--s-6);
+}
+.corps h4 {
+  margin-top: 1.6em;
+  font-weight: 700;
+  font-size: 1.1875rem;
+}
+.corps h2 + *,
+.corps h3 + *,
+.corps h4 + * {
+  margin-top: 0.6em;
+}
+.corps a {
+  color: var(--rouge);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1.5px;
+}
+.corps a:hover {
+  text-decoration-thickness: 3px;
+}
+.corps strong {
+  font-weight: 700;
+  color: var(--encre);
+}
+.corps ul,
+.corps ol {
+  padding-left: 1.3em;
+}
+.corps li + li {
+  margin-top: 0.4em;
+}
+.corps li::marker {
+  color: var(--rouge);
+  font-weight: 700;
+}
+.corps blockquote {
+  position: relative;
+  padding: var(--s-2) 0 var(--s-2) var(--s-7);
+  font-family: var(--f-accent);
+  font-style: italic;
+  font-size: 1.5rem;
+  line-height: 1.45;
+  color: var(--encre);
+}
+.corps blockquote::before {
+  content: "«";
+  position: absolute;
+  left: 0;
+  top: -0.15em;
+  font-family: var(--f-display);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 3rem;
+  color: var(--rouge);
+  line-height: 1;
+}
+.corps :not(pre) > code {
+  padding: 0.1em 0.35em;
+  background: var(--chrome);
+  font: 600 0.9em/1 ui-monospace, "SF Mono", Menlo, monospace;
+}
+.corps pre {
+  padding: var(--s-5);
+  background: var(--encre);
+  color: #f6efe9;
+  overflow-x: auto;
+  font: 500 0.9375rem/1.65 ui-monospace, "SF Mono", Menlo, monospace;
+}
+.corps hr {
+  border: 0;
+  height: 3px;
+  width: 4rem;
+  background: var(--rouge);
+  margin: 2.4em 0;
+}
+.corps figure img {
+  width: 100%;
+}
+.corps figcaption {
+  margin-top: var(--s-3);
+  font-size: var(--t-small);
+  color: #6b5a5d;
+}
+.corps .callout {
+  background: var(--chrome);
+  padding: var(--s-5) var(--s-6);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+.corps .callout::before {
+  content: "";
+  display: block;
+  height: 6px;
+  margin: calc(var(--s-5) * -1) calc(var(--s-6) * -1) var(--s-4);
+  background: var(--rouge);
+}
+.corps .callout--astuce::before {
+  background: var(--beurre);
+}
+.corps .callout--attention::before {
+  background: var(--encre);
+}
+.corps .callout > * + * {
+  margin-top: 0.8em;
+}
+
+.article-pied {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem) var(--s-9);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 960px) {
+  .article-tete {
+    grid-template-columns: 1fr;
+    padding-top: var(--s-6);
+  }
+  .couverture {
+    order: -1;
+    aspect-ratio: 4 / 3;
+    margin: 0 calc(clamp(1.25rem, 4vw, 3rem) * -1);
+  }
+  .lecture {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sommaire-article {
+    position: static;
+  }
+}

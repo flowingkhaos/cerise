@@ -1,0 +1,200 @@
+/* cerise — base: resets, the shared type voices, pills, toasts, browser surfaces. */
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+html {
+  background: var(--rouge);
+  color: var(--encre);
+  font-family: var(--f-text);
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
+}
+body {
+  background: var(--papier);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+body > main {
+  flex: 1;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 3px solid var(--beurre);
+  outline-offset: 3px;
+}
+::selection {
+  background: var(--beurre);
+  color: var(--encre);
+}
+input,
+textarea {
+  caret-color: var(--rouge);
+}
+html {
+  scrollbar-color: var(--rouge) transparent;
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+h1,
+h2,
+h3,
+h4,
+.marque,
+.pill,
+.barre nav,
+.pied nav {
+  font-family: var(--f-display);
+}
+em.accent {
+  font-family: var(--f-accent);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.spec {
+  font-size: var(--t-spec);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-3);
+  min-height: 3.25rem;
+  padding: 0 var(--s-6);
+  border: 0;
+  border-radius: var(--r-pill);
+  font-weight: 700;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: transform 0.4s var(--ease-out), background 0.3s var(--ease-out);
+}
+.pill:hover {
+  transform: translateY(-2px);
+}
+.pill:active {
+  transform: translateY(0);
+}
+.pill .fleche {
+  transition: transform 0.4s var(--ease-out);
+}
+.pill:hover .fleche {
+  transform: translateX(4px);
+}
+.pill-rouge {
+  background: var(--rouge);
+  color: var(--papier);
+}
+.pill-rouge:hover {
+  background: var(--rouge-sombre);
+}
+.pill-blanc {
+  background: var(--papier);
+  color: var(--rouge);
+}
+.pill-ligne {
+  background: transparent;
+  color: var(--encre);
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+.pill[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Server-rendered toast after a redirect: no script, gone after a few seconds. */
+.toast {
+  position: fixed;
+  z-index: 50;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  width: min(26rem, calc(100vw - 2rem));
+  background: var(--papier);
+  color: var(--encre);
+  box-shadow: 0 18px 44px rgb(28 16 19 / 0.28);
+  animation: toast-out 0.5s var(--ease-out) 6s forwards;
+}
+.toast::before {
+  content: "";
+  display: block;
+  height: 6px;
+  background: var(--rouge);
+}
+.toast--ok::before {
+  background: var(--encre);
+}
+.toast--demo::before {
+  background: var(--beurre);
+}
+.toast-corps {
+  padding: var(--s-4) var(--s-5) var(--s-5);
+}
+.toast strong {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 1.25rem;
+}
+.toast p {
+  margin-top: var(--s-1);
+  font-size: var(--t-small);
+  line-height: 1.45;
+  color: var(--chrome-encre);
+}
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *:not(.toast),
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .toast {
+    animation: toast-gone 0s linear 6s forwards;
+  }
+  @keyframes toast-gone {
+    to {
+      visibility: hidden;
+    }
+  }
+}
