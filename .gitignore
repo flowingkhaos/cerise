@@ -1,0 +1,7 @@
+.env
+.data/
+_fresh/
+node_modules/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/config.local.json
