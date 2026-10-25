@@ -107,8 +107,8 @@ function labels(locale: Locale): Record<string, string> {
     italic: fr ? "Italique" : "Italic",
     strike: fr ? "Barré" : "Strikethrough",
     code: fr ? "Code" : "Code",
-    h2: fr ? "Intertitre" : "Heading",
-    h3: fr ? "Sous-titre" : "Subheading",
+    h2: fr ? "Intertitre H2" : "Heading H2",
+    h3: fr ? "Sous-titre H3" : "Subheading H3",
     bulletList: fr ? "Liste à puces" : "Bulleted list",
     orderedList: fr ? "Liste numérotée" : "Numbered list",
     quote: fr ? "Citation" : "Quote",
@@ -129,6 +129,18 @@ function labels(locale: Locale): Record<string, string> {
     astuce: fr ? "Astuce" : "Tip",
     attention: fr ? "Attention" : "Warning",
     calloutType: fr ? "Type d’encadré" : "Callout type",
+    editor: fr ? "Éditeur de texte" : "Text editor",
+    linkInvalid: fr
+      ? "Adresse refusée : utilisez https://, mailto: ou un lien du site."
+      : "Address refused: use https://, mailto: or a link on this site.",
+    figureCaption: fr ? "Légende" : "Caption",
+    figureAlt: fr ? "Description pour les lecteurs d’écran" : "Description for screen readers",
+    figureInsert: fr ? "Insérer l’image" : "Insert image",
+    cancel: fr ? "Annuler" : "Cancel",
+    calloutNote: fr ? "Note" : "Note",
+    calloutAstuce: fr ? "Astuce" : "Tip",
+    calloutAttention: fr ? "Attention" : "Warning",
+    sourceErrors: fr ? "À corriger avant la mise en page :" : "Fix before formatting:",
   };
 }
 
@@ -151,7 +163,7 @@ export default define.page<typeof handler>(function Edit({ data, state }) {
       </div>
       {errors.length > 0 && (
         <div class="erreurs" role="alert">
-          <ul>{errors.map((e) => <li key={e}>{e}</li>)}</ul>
+          <ul>{errors.map((e, i) => <li key={i}>{e}</li>)}</ul>
         </div>
       )}
       <form id="publication" class="edition" method="post" action={action}>

@@ -1,0 +1,479 @@
+/* cerise — the post editor (islands/Editor.tsx). An Operate surface: a chrome module with square
+   corners; the brand lives in the details (red for "on", butter for focus, Roundo on the controls). */
+
+.ed {
+  display: grid;
+  border: 1px solid var(--chrome-ombre);
+  border-radius: var(--r-module);
+  background: var(--papier);
+  color: var(--encre);
+}
+
+.ed [hidden] {
+  display: none;
+}
+
+.ed,
+.ed *,
+.ed-dialog,
+.ed-dialog * {
+  box-sizing: border-box;
+}
+
+/* Focus: a 3px butter ring with an ink edge, so it shows on chrome, paper and red alike. */
+.ed :focus-visible,
+.ed-dialog :focus-visible,
+.ed-toast :focus-visible {
+  outline: 3px solid var(--beurre);
+  outline-offset: 0;
+  box-shadow: 0 0 0 4px var(--encre);
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────────────────────────────── */
+
+.ed-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2);
+  overflow-x: auto;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--chrome-ombre);
+  scrollbar-width: thin;
+}
+
+@media (min-width: 48rem) {
+  .ed-bar {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+.ed-group {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  padding-inline-end: var(--s-2);
+  border-inline-end: 1px solid var(--chrome-ombre);
+}
+
+.ed-btn {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 var(--s-2);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--encre);
+  font: 700 0.875rem/1 var(--f-display);
+  cursor: pointer;
+}
+
+.ed-btn svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ed-btn:hover:not(:disabled) {
+  background: var(--papier);
+}
+.ed-btn[aria-pressed="true"] {
+  background: var(--rouge);
+  color: var(--papier);
+}
+.ed-btn:disabled {
+  color: var(--chrome-ombre);
+  cursor: default;
+}
+.ed-mode {
+  margin-inline-start: auto;
+}
+
+/* ── Writing surface ─────────────────────────────────────────────────────────────────── */
+
+.ed-surface {
+  padding: var(--s-6) var(--s-4) var(--s-7);
+}
+
+.ed-prose {
+  position: relative;
+  max-width: 68ch;
+  min-height: 24rem;
+  margin-inline: auto;
+  font: 400 var(--t-body)/1.65 var(--f-text);
+  color: var(--encre);
+  outline: none;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  font-variant-ligatures: none;
+}
+
+.ed-prose:focus-visible {
+  box-shadow: none;
+  outline: none;
+}
+.ed-surface:focus-within {
+  box-shadow: inset 0 0 0 3px var(--beurre), inset 0 0 0 4px var(--encre);
+}
+
+.ed-prose :where(p, h2, h3, h4, ul, ol, blockquote, pre, figure, aside, div:has(> hr)) {
+  margin: 0 0 var(--s-4);
+}
+.ed-prose :where(li > *, aside > div > *) {
+  margin-bottom: var(--s-2);
+}
+.ed-prose :where(li, .ed-callout-body) > :last-child {
+  margin-bottom: 0;
+}
+
+.ed-prose :where(h2, h3, h4) {
+  margin-top: var(--s-6);
+  font-family: var(--f-display);
+  font-weight: 700;
+  line-height: 1.15;
+}
+.ed-prose h2 {
+  font-size: var(--t-h2);
+}
+.ed-prose h3 {
+  font-size: 1.375rem;
+}
+.ed-prose h4 {
+  font-size: var(--t-body);
+}
+.ed-prose > :first-child {
+  margin-top: 0;
+}
+
+.ed-prose :where(ul, ol) {
+  padding-inline-start: 1.5em;
+}
+.ed-prose li {
+  position: relative;
+}
+.ed-prose blockquote {
+  padding-inline-start: var(--s-5);
+  color: var(--chrome-encre);
+}
+.ed-prose a {
+  color: var(--rouge-sombre);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.ed-prose hr {
+  margin: var(--s-5) 0;
+  border: 0;
+  border-top: 2px solid var(--encre);
+}
+.ed-prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+.ed-prose code,
+.ed-source {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+.ed-prose code {
+  padding: 0.1em 0.3em;
+  background: var(--chrome);
+  font-size: 0.875em;
+}
+
+.ed-prose pre {
+  padding: var(--s-4);
+  overflow-x: auto;
+  background: var(--encre);
+  color: var(--papier);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+.ed-prose pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+.ed-prose pre[data-language]::before {
+  content: attr(data-language);
+  display: block;
+  margin-bottom: var(--s-2);
+  color: var(--chrome-ombre);
+  font: 700 var(--t-spec)/1 var(--f-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ProseMirror's own needs (from prosemirror-view/style/prosemirror.css). */
+.ProseMirror-hideselection *::selection {
+  background: transparent;
+}
+.ProseMirror-hideselection {
+  caret-color: transparent;
+}
+.ProseMirror [draggable][contenteditable="false"] {
+  user-select: text;
+}
+img.ProseMirror-separator {
+  display: inline !important;
+  border: none !important;
+  margin: 0 !important;
+}
+.ed-prose .ProseMirror-selectednode {
+  outline: 3px solid var(--beurre);
+  box-shadow: 0 0 0 4px var(--encre);
+}
+
+/* Callout: chrome ground under a red band, its type picker on top. */
+.ed-callout {
+  padding: var(--s-3) var(--s-4) var(--s-4);
+  background: var(--chrome);
+  border-top: 6px solid var(--rouge);
+}
+
+.ed-callout-head,
+.ed-field > span {
+  color: var(--chrome-encre);
+  font: 700 var(--t-spec)/1.2 var(--f-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ed-callout-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+  user-select: none;
+}
+
+.ed-callout-head select,
+.ed-field input {
+  border: 1px solid var(--chrome-ombre);
+  border-radius: 0;
+  background: var(--papier);
+  color: var(--encre);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.ed-callout-head select {
+  padding: var(--s-1) var(--s-2);
+  font: 700 0.875rem/1.2 var(--f-display);
+}
+
+/* Figure: the picture, then its caption and alt text as plain fields. */
+.ed-figure {
+  border: 1px solid var(--chrome-ombre);
+  background: var(--papier);
+}
+.ed-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ed-figure-fields {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  background: var(--chrome);
+}
+
+.ed-field {
+  display: grid;
+  gap: var(--s-1);
+}
+.ed-field input {
+  width: 100%;
+  padding: var(--s-2);
+  font: 400 var(--t-small)/1.4 var(--f-text);
+}
+
+/* ── Source mode and status ──────────────────────────────────────────────────────────── */
+
+.ed-source {
+  display: block;
+  width: 100%;
+  min-height: 32rem;
+  padding: var(--s-5) var(--s-4);
+  border: 0;
+  border-radius: 0;
+  background: var(--papier);
+  color: var(--encre);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  resize: vertical;
+  tab-size: 2;
+}
+
+.ed-status {
+  min-height: 2rem;
+  margin: 0;
+  padding: var(--s-1) var(--s-3);
+  border-top: 1px solid var(--chrome-ombre);
+  background: var(--chrome);
+  color: var(--chrome-encre);
+  font: 400 var(--t-small)/1.5 var(--f-text);
+}
+.ed-status[data-error] {
+  color: var(--rouge-sombre);
+  font-weight: 600;
+}
+
+/* ── Buttons outside the toolbar are pills ───────────────────────────────────────────── */
+
+.ed-action {
+  padding: var(--s-2) var(--s-4);
+  border: 1px solid var(--chrome-ombre);
+  border-radius: var(--r-pill);
+  background: var(--papier);
+  color: var(--encre);
+  font: 700 0.875rem/1 var(--f-display);
+  cursor: pointer;
+}
+.ed-action--primary {
+  border-color: var(--rouge);
+  background: var(--rouge);
+  color: var(--papier);
+}
+
+/* ── Demo toast: a solid red block ───────────────────────────────────────────────────── */
+
+.ed-toasts {
+  position: fixed;
+  right: var(--s-4);
+  bottom: var(--s-4);
+  left: var(--s-4);
+  z-index: 50;
+}
+
+@media (min-width: 40rem) {
+  .ed-toasts {
+    left: auto;
+    width: 24rem;
+  }
+}
+
+.ed-toast {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-2);
+  padding: var(--s-4);
+  border-radius: var(--r-module);
+  background: var(--rouge);
+  color: var(--papier);
+  box-shadow: var(--ombre-module);
+}
+.ed-toast p {
+  margin: 0;
+}
+.ed-toast-title {
+  font: 700 1.125rem/1.2 var(--f-display);
+}
+.ed-toast-body {
+  font: 400 var(--t-small)/1.5 var(--f-text);
+}
+.ed-toast .ed-action {
+  border-color: var(--papier);
+  color: var(--rouge);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ed-toast {
+    animation: ed-rise 240ms var(--ease-out);
+  }
+}
+@keyframes ed-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+/* ── Figure picker ───────────────────────────────────────────────────────────────────── */
+
+.ed-dialog {
+  width: min(44rem, calc(100vw - 2 * var(--s-4)));
+  max-height: calc(100dvh - 2 * var(--s-4));
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-module);
+  background: var(--papier);
+  color: var(--encre);
+  box-shadow: var(--ombre-module);
+}
+.ed-dialog::backdrop {
+  background: color-mix(in srgb, var(--encre) 60%, transparent);
+}
+
+.ed-dialog-title {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  background: var(--rouge);
+  color: var(--papier);
+  font: 700 1.125rem/1.2 var(--f-display);
+}
+
+.ed-picks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: var(--s-3);
+  padding: var(--s-4);
+}
+
+.ed-pick {
+  display: grid;
+  align-content: start;
+  gap: var(--s-1);
+  padding: 0 0 var(--s-2);
+  border: 1px solid var(--chrome-ombre);
+  border-radius: 0;
+  background: var(--papier);
+  color: var(--chrome-encre);
+  font: 400 var(--t-spec)/1.3 var(--f-text);
+  text-align: start;
+  cursor: pointer;
+}
+.ed-pick:hover {
+  border-color: var(--rouge);
+}
+.ed-pick img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.ed-pick span {
+  padding-inline: var(--s-2);
+}
+
+.ed-figure-form {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+}
+.ed-figure-preview {
+  display: block;
+  width: 100%;
+  max-height: 16rem;
+  object-fit: cover;
+}
+
+.ed-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-4);
+  background: var(--chrome);
+}

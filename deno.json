@@ -4,7 +4,7 @@
     "kv"
   ],
   "tasks": {
-    "check": "deno fmt --check . && deno lint . && deno check main.ts client.ts routes islands components lib editor scripts && sh scripts/greps.sh",
+    "check": "deno fmt --check . && deno lint . && deno check main.ts client.ts routes islands components lib editor scripts pages i18n && sh scripts/greps.sh",
     "dev": "vite",
     "build": "vite build",
     "start": "deno serve -A --unstable-kv _fresh/server.js",
