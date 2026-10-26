@@ -1,7 +1,7 @@
 ---
-title: "Why this page shows up *in the blink of an eye*."
+title: "Why this page shows up *in the blink of an eye*"
 slug: en-un-clin-d-oeil
-excerpt: "A cerise post is prepared once, when you save it. After that, reading it costs almost nothing."
+excerpt: "A cerise post is prepared once, when you save it. After that, it opens in an instant."
 topics: [vitesse, outils]
 cover: /img/posts/en-un-clin-d-oeil.webp
 coverAlt: "A woman runs a jade roller under her eye"

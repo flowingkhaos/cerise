@@ -1,5 +1,5 @@
 ---
-title: "Vos consignes, *dans un encadré*."
+title: "Annulation, retards, stationnement : *vos règles bien en vue*"
 slug: vos-consignes-dans-un-encadre
 excerpt: "Les politiques d’annulation et les rappels pratiques se perdent au milieu d’un texte. Un encadré les met là où l’œil tombe."
 topics: [ecrire, outils]
@@ -19,8 +19,7 @@ paragraphe, elles disparaissent. Dans un encadré, elles sautent aux yeux.
 cerise offre trois types d’encadré. Vous choisissez celui qui correspond au ton du message.
 
 <Callout type="note">
-Arrivez dix minutes avant votre rendez-vous : le temps de vous installer est compris dans le
-vôtre.
+Arrivez dix minutes à l’avance : le temps de vous installer fait partie de votre rendez-vous.
 </Callout>
 
 <Callout type="astuce">
@@ -46,10 +45,9 @@ Arrivez dix minutes avant votre rendez-vous.
 </Callout>
 ```
 
-C’est ce qu’on appelle un **composant nommé** : une balise prise dans une courte liste connue
-d’avance. cerise la transforme en encadré au moment où vous enregistrez. Une balise qui n’est
-pas sur la liste est refusée, avec son nom dans le message. Votre article ne peut donc jamais
-afficher un bloc à moitié cassé.
+cerise connaît une courte liste de blocs comme celui-ci, et les met en forme au moment où vous
+enregistrez. Un bloc qui n’est pas sur la liste est refusé, avec son nom dans le message. Votre
+article ne peut donc jamais afficher un bloc à moitié cassé.
 
 ## Un encadré par page, souvent
 

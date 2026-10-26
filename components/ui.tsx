@@ -4,6 +4,7 @@ import type { ComponentChildren } from "preact";
 import type { Locale, PostSummary, Toast as ToastT } from "../lib/types.ts";
 import { fmtDate, href, swapLocale, t, topicLabel } from "../lib/i18n.ts";
 import { plainTitle, titleHtml } from "../lib/markdown.ts";
+import { VISITOR } from "../lib/auth.ts";
 
 export function Seo(
   { locale, url, title, description, image, alternate = true }: {
@@ -64,9 +65,99 @@ export function Masthead(
         <a class="garde" href={swapLocale(path)} lang={locale === "fr" ? "en" : "fr"} aria-label={d.otherLabel}>
           {d.other}
         </a>
-        <a class="garde" href={href(locale, "/connexion")}>{d.signIn}</a>
+        <a class="garde connexion-lien" href={href(locale, "/connexion")}>{d.signIn}</a>
+        <form class="mode" method="post" action="/mode">
+          <input type="hidden" name="back" value={path} />
+          <button type="submit" name="mode" value="dark" aria-label={d.dark} title={d.dark}>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1Z" />
+            </svg>
+          </button>
+          <button type="submit" name="mode" value="light" aria-label={d.light} title={d.light}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+              <path
+                d="M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </form>
       </nav>
     </header>
+  );
+}
+
+/** One tap into the editor: signs in as the visitor (the public demo account) and opens `postId`. */
+export function TryForm(
+  { locale, postId, label, class: cls = "pill pill-rouge" }: {
+    locale: Locale;
+    postId?: string;
+    label: string;
+    class?: string;
+  },
+) {
+  return (
+    <form method="post" action={href(locale, "/connexion")}>
+      <input type="hidden" name="username" value={VISITOR.username} />
+      <input type="hidden" name="password" value={VISITOR.password} />
+      <input type="hidden" name="next" value={href(locale, postId ? `/admin/posts/${postId}` : "/admin")} />
+      <button class={cls} type="submit">
+        {label} <span class="fleche" aria-hidden="true">→</span>
+      </button>
+    </form>
+  );
+}
+
+/** The visitor login, printed: it is public on purpose. */
+export function VisitorIds({ locale }: { locale: Locale }) {
+  return (
+    <p class="ids">
+      {t(locale).home.visitor} : <b>{VISITOR.username}</b> / <b>{VISITOR.password}</b>
+    </p>
+  );
+}
+
+/** Phones only: the editor one tap away, pinned to the bottom of the screen. */
+export function TryBar({ locale, postId }: { locale: Locale; postId?: string }) {
+  return (
+    <div class="barre-essai">
+      <TryForm locale={locale} postId={postId} label={t(locale).home.tryBar} />
+      <span class="ids">
+        <b>{VISITOR.username}</b> / <b>{VISITOR.password}</b>
+      </span>
+    </div>
+  );
+}
+
+/** A post's photo carries its view-transition name, so it travels into the article's cover. */
+export const coverName = (slug: string) => `view-transition-name: p-${slug}`;
+
+/** A magazine card (home, end of an article). `big` spans the row, photo beside the text. */
+export function Card({ post, locale, big = false }: { post: PostSummary; locale: Locale; big?: boolean }) {
+  const d = t(locale);
+  return (
+    <a class={`carte revele${big ? " carte-grand" : ""}`} href={href(locale, `/articles/${post.slug}`)}>
+      <div class="carte-photo">
+        {post.cover && (
+          <img
+            src={post.cover}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width="1067"
+            height="1334"
+            style={coverName(post.slug)}
+          />
+        )}
+      </div>
+      <div class="carte-texte">
+        {post.topics[0] && <p class="sur">{topicLabel(locale, post.topics[0])}</p>}
+        <Title text={post.title} as="h3" />
+        {post.excerpt && <p class="extrait">{post.excerpt}</p>}
+        <p class="spec">{fmtDate(locale, post.publishedAt)} · {d.post.minutes(post.minutes)}</p>
+      </div>
+    </a>
   );
 }
 

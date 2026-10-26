@@ -1,5 +1,5 @@
 ---
-title: "Écrivez comme vous *parlez à vos clientes*."
+title: "Écrivez comme vous *parlez à vos clientes*"
 slug: ecrivez-comme-vous-parlez
 excerpt: "L’éditeur de cerise tient sur une ligne : vous tapez, il met en forme. Pas de menus à fouiller entre deux rendez-vous."
 topics: [ecrire, editeur]

@@ -61,6 +61,33 @@ for (const p of PUBLIC) {
   }
 }
 
+// 2b. the reader's paths: no post twice on the home page, three ways on from an article,
+// the editor one tap away, the light/dark pick rendered by the server
+{
+  const home = await (await get("/")).text();
+  const slugs = [...home.matchAll(/href="\/articles\/([a-z0-9-]+)"/g)].map((m) => m[1]);
+  ok("home shows no post twice", slugs.length > 0 && new Set(slugs).size === slugs.length, slugs.join(" "));
+  ok("home opens the editor in one tap", /name="next" value="\/admin\/posts\/[0-9a-f-]{36}"/.test(home));
+  const art = await (await get("/articles/ecrivez-comme-vous-parlez")).text();
+  const end = art.slice(art.indexOf('class="la-suite"'));
+  const ways = end.match(/href="\/articles\/[a-z0-9-]+"|name="next" value="\/admin\/posts\//g) ?? [];
+  ok("article ends with 3+ ways forward", ways.length >= 3, String(ways.length));
+  const m = await get("/mode", {
+    method: "POST",
+    headers: sameOrigin,
+    body: form({ mode: "dark", back: "/articles" }),
+  });
+  await m.body?.cancel();
+  const pick = (m.headers.get("set-cookie") ?? "").split(";")[0];
+  ok(
+    "mode pick → 303 back + cookie",
+    m.status === 303 && m.headers.get("location") === "/articles" && pick === "cerise_mode=dark",
+    `${m.status} ${m.headers.get("location")} ${pick}`,
+  );
+  const dark = await (await get("/", { headers: { cookie: pick } })).text();
+  ok("the server renders the pick", dark.includes('data-theme="dark"'));
+}
+
 // 3. guard: cross-site and size refusals
 {
   const r = await get("/connexion", {

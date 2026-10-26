@@ -1,5 +1,5 @@
 ---
-title: "Your house rules, *in a box*."
+title: "Cancellations, late arrivals, parking: *your rules in plain sight*"
 slug: vos-consignes-dans-un-encadre
 excerpt: "Cancellation policies and practical reminders get lost in the middle of a paragraph. A callout puts them where the eye lands."
 topics: [ecrire, outils]
@@ -43,9 +43,9 @@ Arrive ten minutes before your appointment.
 </Callout>
 ```
 
-This is called a **named component**: a tag taken from a short list known in advance. cerise turns
-it into a callout when you save. A tag that is not on the list is refused, with its name in the
-message, so a post can never show a half-broken block.
+cerise knows a short list of blocks like this one, and lays them out when you save. A block that
+is not on the list is refused, with its name in the message, so a post can never show a
+half-broken block.
 
 ## One callout per page, usually
 

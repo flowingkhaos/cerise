@@ -17,24 +17,24 @@
   text-wrap: balance;
 }
 .article-tete h1 em.accent {
-  color: var(--rouge);
+  color: var(--rouge-texte);
 }
 .article-tete .chapo {
   margin-top: var(--s-5);
   max-width: 46ch;
   font-size: 1.3125rem;
   line-height: 1.5;
-  color: #4a3b3e;
+  color: var(--texte-doux);
 }
 .article-tete .spec {
   margin-top: var(--s-5);
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-2) var(--s-4);
-  color: #6b5a5d;
+  color: var(--texte-pale);
 }
 .article-tete .spec a {
-  color: var(--rouge);
+  color: var(--rouge-texte);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
@@ -43,11 +43,9 @@
   overflow: hidden;
 }
 
-/* the flip: the page and its markdown, one click apart, no script */
-.flip {
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 0 clamp(1.25rem, 4vw, 3rem);
+/* the flip: the raw text under the article, one click away, no script */
+.flip[open] {
+  flex-basis: 100%;
 }
 .flip summary {
   display: inline-flex;
@@ -70,7 +68,7 @@
 }
 .source p {
   font-size: var(--t-small);
-  color: #6b5a5d;
+  color: var(--texte-pale);
   max-width: 70ch;
 }
 .source pre {
@@ -84,10 +82,6 @@
   max-height: 80svh;
   overflow: auto;
 }
-.flip[open] ~ .lecture {
-  display: none;
-}
-
 .lecture {
   display: grid;
   grid-template-columns: 14rem minmax(0, 68ch);
@@ -107,7 +101,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #6b5a5d;
+  color: var(--texte-pale);
 }
 .sommaire-article ol {
   list-style: none;
@@ -123,14 +117,24 @@
   line-height: 1.35;
 }
 .sommaire-article a:hover {
-  color: var(--rouge);
+  color: var(--rouge-texte);
 }
 
 /* prose */
 .corps {
   font-size: var(--t-body);
   line-height: 1.7;
-  color: #2a1c1f;
+  color: var(--texte);
+}
+/* the first letter, set like a shade name */
+.corps > p:first-child::first-letter {
+  float: left;
+  margin: 0.06em 0.12em 0 0;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 4.4em;
+  line-height: 0.78;
+  color: var(--rouge-texte);
 }
 .corps > * + * {
   margin-top: 1.15em;
@@ -141,7 +145,6 @@
   font-size: 2rem;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  color: var(--encre);
   scroll-margin-top: var(--s-6);
 }
 .corps h3 {
@@ -149,7 +152,6 @@
   font-weight: 700;
   font-size: 1.5rem;
   line-height: 1.15;
-  color: var(--encre);
   scroll-margin-top: var(--s-6);
 }
 .corps h4 {
@@ -163,7 +165,7 @@
   margin-top: 0.6em;
 }
 .corps a {
-  color: var(--rouge);
+  color: var(--rouge-texte);
   text-decoration: underline;
   text-underline-offset: 0.18em;
   text-decoration-thickness: 1.5px;
@@ -173,7 +175,6 @@
 }
 .corps strong {
   font-weight: 700;
-  color: var(--encre);
 }
 .corps ul,
 .corps ol {
@@ -183,7 +184,7 @@
   margin-top: 0.4em;
 }
 .corps li::marker {
-  color: var(--rouge);
+  color: var(--rouge-texte);
   font-weight: 700;
 }
 .corps blockquote {
@@ -193,7 +194,6 @@
   font-style: italic;
   font-size: 1.5rem;
   line-height: 1.45;
-  color: var(--encre);
 }
 .corps blockquote::before {
   content: "«";
@@ -204,12 +204,12 @@
   font-style: normal;
   font-weight: 700;
   font-size: 3rem;
-  color: var(--rouge);
+  color: var(--rouge-texte);
   line-height: 1;
 }
 .corps :not(pre) > code {
   padding: 0.1em 0.35em;
-  background: var(--chrome);
+  background: var(--carte-2);
   font: 600 0.9em/1 ui-monospace, "SF Mono", Menlo, monospace;
 }
 .corps pre {
@@ -232,40 +232,136 @@
 .corps figcaption {
   margin-top: var(--s-3);
   font-size: var(--t-small);
-  color: #6b5a5d;
+  color: var(--texte-pale);
 }
 .corps .callout {
-  background: var(--chrome);
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
   padding: var(--s-5) var(--s-6);
+  border-left: 6px solid var(--rouge);
+  background: var(--carte-2);
   font-size: 1.0625rem;
   line-height: 1.6;
 }
 .corps .callout::before {
-  content: "";
+  content: "Note";
   display: block;
-  height: 6px;
-  margin: calc(var(--s-5) * -1) calc(var(--s-6) * -1) var(--s-4);
-  background: var(--rouge);
+  margin-bottom: var(--s-2);
+  font-size: var(--t-spec);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rouge-texte);
+}
+.corps .callout--astuce {
+  border-color: var(--beurre);
+  background: light-dark(#fdf6d3, #2b2512);
 }
 .corps .callout--astuce::before {
-  background: var(--beurre);
+  content: "Astuce";
+  color: light-dark(#7a5d00, var(--beurre));
+}
+.corps .callout--attention {
+  border-color: var(--rouge-nuit);
+  background: var(--rouge);
+  color: var(--papier);
 }
 .corps .callout--attention::before {
-  background: var(--encre);
+  content: "Attention";
+  color: var(--beurre);
+}
+.corps .callout--astuce:lang(en)::before {
+  content: "Tip";
 }
 .corps .callout > * + * {
   margin-top: 0.8em;
 }
 
 .article-pied {
-  max-width: 68ch;
+  max-width: 80rem;
   margin: 0 auto;
-  padding: 0 clamp(1.25rem, 4vw, 3rem) var(--s-9);
+  padding: var(--s-7) clamp(1.25rem, 4vw, 3rem) var(--s-9);
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-4);
   justify-content: space-between;
   align-items: center;
+  border-top: 1px solid var(--filet);
+}
+
+/* reading progress: a scroll timeline, no script */
+.progression {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .progression {
+    display: block;
+    position: fixed;
+    z-index: 40;
+    inset: 0 0 auto;
+    height: 4px;
+    background: var(--beurre);
+    transform-origin: 0 50%;
+    animation: progression linear both;
+    animation-timeline: scroll(root);
+  }
+}
+@keyframes progression {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* what comes after the last line: try it here, the next post, two more */
+.la-suite {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem) var(--s-8);
+}
+.essai-ici {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) auto;
+  gap: var(--s-5) var(--s-7);
+  align-items: end;
+  padding: clamp(2rem, 4vw, 3.5rem);
+  background: var(--rouge);
+  color: var(--papier);
+}
+.essai-ici .sur {
+  color: var(--beurre);
+}
+.essai-ici h2 {
+  margin-top: var(--s-3);
+  font-weight: 700;
+  font-size: clamp(2rem, 1.3rem + 2.2vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.essai-ici h2 em.accent {
+  color: var(--beurre);
+}
+.essai-ici p:not(.sur) {
+  margin-top: var(--s-4);
+  max-width: 50ch;
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+.la-suite > h2 {
+  margin-top: var(--s-8);
+  padding-bottom: var(--s-4);
+  border-bottom: 3px solid var(--texte);
+  font-weight: 700;
+  font-size: var(--t-h2);
+  letter-spacing: -0.02em;
+}
+.la-suite > .carte {
+  margin-top: var(--s-6);
+}
+.la-suite > .grille {
+  margin-top: var(--s-6);
 }
 
 @media (max-width: 960px) {
@@ -283,5 +379,8 @@
   }
   .sommaire-article {
     position: static;
+  }
+  .essai-ici {
+    grid-template-columns: 1fr;
   }
 }

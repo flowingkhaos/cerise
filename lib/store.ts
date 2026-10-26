@@ -22,7 +22,7 @@ export const CHUNK = 30_000;
 export const MAX_SOURCE = 100_000;
 // Bumping it wipes and reseeds the store on the next request: the lever for a key-layout change.
 // v2 (2026-10-26): article bodies keyed by slug, one read per page (measured 237 ms → see below).
-const SEED_VERSION = 2;
+const SEED_VERSION = 3;
 const SESSION_MS = 24 * 60 * 60 * 1000;
 export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 

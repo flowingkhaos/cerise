@@ -1,7 +1,7 @@
 ---
-title: "Essayez tout, *rien ne casse*."
+title: "Essayez tout, *rien ne casse*"
 slug: essayez-tout-rien-ne-casse
-excerpt: "Le compte visiteur ouvre tout l’espace d’administration. Vous pouvez écrire, modifier, publier : rien n’est enregistré."
+excerpt: "Avec le compte visiteur, vous entrez dans tout l’espace d’administration. Écrivez, modifiez, publiez : rien n’est conservé."
 topics: [demo]
 cover: /img/posts/essayez-tout-rien-ne-casse.webp
 coverAlt: "Quatre rouges à lèvres alignés comme des testeurs"
@@ -38,7 +38,7 @@ Rien n’est conservé, mais c’est une bonne habitude.
 ## Pourquoi c’est fait ainsi
 
 Une démo publique attire toutes sortes de visites. Si chacun pouvait publier, le blogue serait
-méconnaissable en une heure. Le compte visiteur vous donne le volant, sans les clés de
-contact : vous sentez la voiture, personne ne repart avec.
+méconnaissable en une heure. Le compte visiteur vous laisse prendre le
+volant, mais personne ne repart avec la voiture.
 
 Sur votre propre site, bien sûr, Publier publie.

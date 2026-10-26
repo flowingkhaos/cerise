@@ -1,5 +1,5 @@
 ---
-title: "Write the way you *talk to your clients*."
+title: "Write the way you *talk to your clients*"
 slug: ecrivez-comme-vous-parlez
 excerpt: "cerise's editor fits on one line: you type, it formats. No menus to dig through between two appointments."
 topics: [ecrire, editeur]

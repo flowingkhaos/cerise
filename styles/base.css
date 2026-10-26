@@ -5,13 +5,13 @@
 }
 html {
   background: var(--rouge);
-  color: var(--encre);
+  color: var(--texte);
   font-family: var(--f-text);
   -webkit-font-smoothing: antialiased;
   text-size-adjust: 100%;
 }
 body {
-  background: var(--papier);
+  background: var(--fond);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -127,7 +127,7 @@ em.accent {
 }
 .pill-ligne {
   background: transparent;
-  color: var(--encre);
+  color: var(--texte);
   box-shadow: inset 0 0 0 2px currentColor;
 }
 .pill[disabled] {
@@ -143,8 +143,8 @@ em.accent {
   right: clamp(1rem, 3vw, 2rem);
   bottom: clamp(1rem, 3vw, 2rem);
   width: min(26rem, calc(100vw - 2rem));
-  background: var(--papier);
-  color: var(--encre);
+  background: var(--fond);
+  color: var(--texte);
   box-shadow: 0 18px 44px rgb(28 16 19 / 0.28);
   animation: toast-out 0.5s var(--ease-out) 6s forwards;
 }
@@ -155,7 +155,7 @@ em.accent {
   background: var(--rouge);
 }
 .toast--ok::before {
-  background: var(--encre);
+  background: var(--texte);
 }
 .toast--demo::before {
   background: var(--beurre);
@@ -172,7 +172,7 @@ em.accent {
   margin-top: var(--s-1);
   font-size: var(--t-small);
   line-height: 1.45;
-  color: var(--chrome-encre);
+  color: var(--texte-doux);
 }
 @keyframes toast-out {
   to {
@@ -182,7 +182,34 @@ em.accent {
   }
 }
 
+/* ---------- motion: CSS only, no script ---------- */
+/* Pages cross-fade; a post's photo travels from the card to the article cover (view-transition-name). */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-group(*) {
+  animation-duration: 0.5s;
+  animation-timing-function: var(--ease-out);
+}
+@keyframes leve {
+  from {
+    opacity: 0;
+    translate: 0 1.25rem;
+  }
+}
+/* Sections rise as they enter; browsers without scroll timelines show them still. */
+@supports (animation-timeline: view()) {
+  .revele {
+    animation: leve linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
   *:not(.toast),
   *::before,
   *::after {

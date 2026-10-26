@@ -1,5 +1,5 @@
 ---
-title: "One photo, *one caption*."
+title: "One photo, *one caption*"
 slug: une-photo-une-legende
 excerpt: "A picture without a caption is a shop window without a label. The Figure component keeps them together."
 topics: [ecrire, outils]

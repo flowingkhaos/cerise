@@ -69,4 +69,6 @@ export interface State {
   role: Role | null;
   /** A toast carried across a redirect (lib/flash.ts). */
   toast?: Toast;
+  /** The visitor's light/dark pick (cookie); unset follows the system. */
+  theme?: "light" | "dark";
 }

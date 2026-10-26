@@ -1,5 +1,5 @@
 ---
-title: "Une photo, *une légende*."
+title: "Une photo, *une légende*"
 slug: une-photo-une-legende
 excerpt: "Une image sans légende, c’est une vitrine sans étiquette. Le composant Figure les garde ensemble."
 topics: [ecrire, outils]

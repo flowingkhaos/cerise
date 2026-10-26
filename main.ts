@@ -48,6 +48,7 @@ app.use(async (ctx) => {
     res.headers.set("cache-control", "private, no-store");
   } else if (res.status === 200 && /^text\/html|xml/.test(type)) {
     res.headers.set("cache-control", "public, max-age=60, stale-while-revalidate=600");
+    res.headers.append("vary", "Cookie"); // the light/dark pick is rendered into the HTML
   }
   if (
     res.body && COMPRESSIBLE.test(type) && !res.headers.has("content-encoding") &&
@@ -78,6 +79,11 @@ app.use(async (ctx) => {
   }));
   ctx.state.locale = localeOf(ctx.url.pathname);
   ctx.state.role = null; // only routes/admin/_middleware.ts and the sign-in page read the session
+  // The admin and the editor keep one look; public pages take the visitor's pick.
+  ctx.state.theme = /^\/(en\/)?admin(\/|$)/.test(ctx.url.pathname)
+    ? "light"
+    : (ctx.req.headers.get("cookie") ?? "").match(/(?:^|;\s*)cerise_mode=(light|dark)/)?.[1] as "light" | "dark" ??
+      undefined;
   const flash = readFlash(ctx.req);
   ctx.state.toast = flash ?? undefined;
   const res = await ctx.next();

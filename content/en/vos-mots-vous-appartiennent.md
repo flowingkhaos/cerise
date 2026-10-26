@@ -1,5 +1,5 @@
 ---
-title: "Your words *belong to you*."
+title: "Your words *belong to you*"
 slug: vos-mots-vous-appartiennent
 excerpt: "Everything you write in cerise exports as plain text that opens anywhere. You can leave whenever you want, with everything."
 topics: [outils]

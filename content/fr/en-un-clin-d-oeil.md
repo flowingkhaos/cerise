@@ -1,7 +1,7 @@
 ---
-title: "Pourquoi cette page s’affiche *en un clin d’œil*."
+title: "Pourquoi cette page s’affiche *en un clin d’œil*"
 slug: en-un-clin-d-oeil
-excerpt: "Un article de cerise est préparé une seule fois, au moment où vous l’enregistrez. Ensuite, le lire ne coûte presque rien."
+excerpt: "Un article de cerise est préparé une seule fois, au moment où vous l’enregistrez. Ensuite, il s’ouvre en un instant."
 topics: [vitesse, outils]
 cover: /img/posts/en-un-clin-d-oeil.webp
 coverAlt: "Une femme passe un rouleau de jade sous son œil"

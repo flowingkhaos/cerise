@@ -23,6 +23,8 @@
    Pages load it from Fontshare: <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@401&display=swap"> */
 
 :root {
+  /* light-dark() follows the system until the visitor picks a mode (data-theme, from a cookie) */
+  color-scheme: light dark;
   --rouge: #c8102e;
   --rouge-sombre: #9e0b24;
   --rouge-nuit: #5e0616;
@@ -35,8 +37,18 @@
   --chrome-ombre: #b7b1ab;
   --chrome-encre: #4f4845;
   --encre: #1c1013;
-  --papier: #ffffff;
+  --papier: #ffffff; /* white ink on red; the page itself is --fond */
   --rayure: #2e5fc4;
+
+  /* surfaces and inks that flip with the mode */
+  --fond: light-dark(#ffffff, #150c0e);
+  --texte: light-dark(#1c1013, #f7eef0);
+  --texte-doux: light-dark(#4a3b3e, #d8cacd);
+  --texte-pale: light-dark(#6b5a5d, #a9989c);
+  --filet: light-dark(rgb(28 16 19 / 0.16), rgb(255 255 255 / 0.14));
+  --carte: light-dark(#fbfaf8, #231a1c);
+  --carte-2: light-dark(#e9e5e1, #1d1517);
+  --rouge-texte: light-dark(#c8102e, #ff6b7d); /* red as text: AA on both grounds */
 
   --f-display: "Roundo", ui-rounded, system-ui, sans-serif;
   --f-accent: "Sentient", Georgia, serif;
@@ -63,6 +75,13 @@
   --r-module: 0;
   --ombre-module: 0 18px 44px rgb(94 6 22 / 0.35);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 ::selection {

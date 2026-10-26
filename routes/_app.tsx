@@ -4,7 +4,7 @@ import { t } from "../lib/i18n.ts";
 export default define.page(function App({ Component, state }) {
   const d = t(state.locale);
   return (
-    <html lang={d.htmlLang}>
+    <html lang={d.htmlLang} data-theme={state.theme}>
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

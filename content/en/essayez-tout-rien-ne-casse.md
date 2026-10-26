@@ -1,7 +1,7 @@
 ---
-title: "Try everything, *nothing breaks*."
+title: "Try everything, *nothing breaks*"
 slug: essayez-tout-rien-ne-casse
-excerpt: "The visitor account opens the whole admin. You can write, edit and publish: nothing is saved."
+excerpt: "With the visitor account you get the whole admin. Write, edit, publish: nothing is kept."
 topics: [demo]
 cover: /img/posts/essayez-tout-rien-ne-casse.webp
 coverAlt: "Four lipsticks lined up like testers"
@@ -37,7 +37,7 @@ but it is a good habit.
 ## Why it works this way
 
 A public demo attracts all kinds of visits. If anyone could publish, the blog would be
-unrecognisable within the hour. The visitor account hands you the wheel without the ignition key:
-you feel the car, nobody drives off with it.
+unrecognisable within the hour. The visitor account lets you take the wheel, but nobody
+drives off with the car.
 
 On your own site, of course, Publish publishes.

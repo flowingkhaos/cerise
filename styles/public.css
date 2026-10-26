@@ -1,4 +1,5 @@
-/* cerise — public pages: the vitrine (home), lists, topics, sign-in, 404, footer. */
+/* cerise — public pages: the vitrine (home), the editor moment, cards, lists, topics, sign-in, 404,
+   footer. Everything here works without a script. */
 
 /* ---------- masthead ---------- */
 .barre {
@@ -18,6 +19,7 @@
 }
 .barre nav {
   display: flex;
+  align-items: center;
   gap: clamp(1rem, 2vw, 2rem);
   font-weight: 700;
   font-size: 1.125rem;
@@ -36,11 +38,55 @@
   padding: var(--s-5) clamp(1.25rem, 4vw, 3rem);
 }
 
-/* ---------- la vitrine ---------- */
+/* the light/dark switch: a form, so the choice lives in a cookie and the server renders it */
+.mode {
+  display: contents;
+}
+.mode button {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: rgb(255 255 255 / 0.16);
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.3s var(--ease-out), rotate 0.5s var(--ease-out);
+}
+.mode button:hover {
+  background: rgb(255 255 255 / 0.3);
+  rotate: -25deg;
+}
+.mode svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+.mode button[value="light"] {
+  display: none;
+}
+:root[data-theme="dark"] .mode button[value="light"] {
+  display: grid;
+}
+:root[data-theme="dark"] .mode button[value="dark"] {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .mode button[value="light"] {
+    display: grid;
+  }
+  :root:not([data-theme]) .mode button[value="dark"] {
+    display: none;
+  }
+}
+
+/* ---------- la vitrine: one screen, never taller ---------- */
 .vitrine {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(22rem, 1fr);
-  min-height: min(100svh, 62rem);
+  height: min(100svh, 60rem);
+  min-height: 34rem;
   background: var(--rouge);
 }
 .une {
@@ -49,8 +95,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--s-8);
-  padding: var(--s-6) clamp(1.25rem, 3vw, 3rem) clamp(2rem, 5vw, 4rem);
+  gap: var(--s-6);
+  padding: var(--s-6) clamp(1.25rem, 3vw, 3rem) clamp(2rem, 4vw, 3.5rem);
   overflow: hidden;
   isolation: isolate;
 }
@@ -60,6 +106,7 @@
   z-index: -2;
   object-position: 58% 45%;
   animation: approche 1.8s var(--ease-out) both;
+  transition: scale 1.2s var(--ease-out);
 }
 @keyframes approche {
   from {
@@ -69,6 +116,9 @@
     transform: scale(1);
   }
 }
+.une:has(.une-lien:hover) > .photo {
+  scale: 1.035;
+}
 .une::before {
   content: "";
   position: absolute;
@@ -76,10 +126,30 @@
   z-index: -1;
   background:
     linear-gradient(180deg, rgb(28 16 19 / 0.45) 0%, transparent 22%),
-    linear-gradient(0deg, rgb(28 16 19 / 0.78) 0%, rgb(28 16 19 / 0.45) 34%, transparent 62%);
+    linear-gradient(0deg, rgb(28 16 19 / 0.8) 0%, rgb(28 16 19 / 0.45) 36%, transparent 64%);
 }
-.une-texte {
-  max-width: 44rem;
+.une .barre {
+  position: relative;
+  z-index: 1;
+}
+/* The whole card is the link: its ::after covers the photo. */
+.une-lien {
+  display: block;
+  max-width: 46rem;
+}
+.une-lien::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.une-lien > * {
+  animation: leve 0.9s var(--ease-out) both;
+}
+.une-lien > :nth-child(2) {
+  animation-delay: 0.12s;
+}
+.une-lien > :nth-child(3) {
+  animation-delay: 0.24s;
 }
 .une h1 {
   font-weight: 700;
@@ -113,18 +183,32 @@
   height: 0.5em;
   border-radius: 50%;
   background: var(--rouge);
+  animation: pouls 2.4s ease-in-out infinite;
+}
+@keyframes pouls {
+  50% {
+    opacity: 0.25;
+  }
 }
 .une .pill {
-  margin-top: var(--s-6);
+  margin-top: var(--s-5);
+}
+.une-lien:hover .pill {
+  transform: translateY(-2px);
+}
+.une-lien:hover .fleche {
+  transform: translateX(4px);
 }
 .une-vide {
   background: var(--rouge-sombre);
 }
 
+/* the rail: two posts and the try strip, sized to fit beside the hero */
 .presentoir {
   display: flex;
   flex-direction: column;
-  padding: var(--s-6) clamp(1.25rem, 2.6vw, 2.5rem);
+  min-height: 0;
+  padding: var(--s-6) clamp(1.25rem, 2.6vw, 2.5rem) clamp(1.5rem, 3vw, 2.5rem);
   color: var(--papier);
   background: var(--rouge);
 }
@@ -132,30 +216,28 @@
   font-weight: 700;
   font-size: var(--t-h2);
   letter-spacing: -0.02em;
-  margin-bottom: var(--s-4);
+  margin-bottom: var(--s-3);
 }
 .fente {
   display: grid;
-  grid-template-columns: 6rem 1fr;
+  grid-template-columns: 5.5rem 1fr;
   gap: var(--s-4);
   align-items: center;
   padding: var(--s-4) 0;
   border-top: 1px solid rgb(255 255 255 / 0.3);
+  transition: translate 0.4s var(--ease-out);
 }
 .fente img,
 .fente .vide {
-  width: 6rem;
+  width: 5.5rem;
   aspect-ratio: 1;
   object-fit: cover;
 }
 .fente .vide {
   border: 1.5px dashed rgb(255 255 255 / 0.5);
 }
-.fente .no {
-  font-weight: 700;
-  font-size: 1.125rem;
+.fente .sur {
   color: var(--beurre);
-  font-variant-numeric: tabular-nums;
 }
 .fente h3 {
   font-weight: 700;
@@ -167,6 +249,9 @@
 .fente .spec {
   margin-top: var(--s-2);
 }
+a.fente:hover {
+  translate: 4px 0;
+}
 a.fente:hover h3 {
   text-decoration: underline;
   text-underline-offset: 0.18em;
@@ -175,13 +260,13 @@ a.fente:hover h3 {
 
 .essai {
   margin-top: auto;
-  background: linear-gradient(180deg, #fbfaf8, var(--chrome));
-  color: var(--encre);
+  background: linear-gradient(180deg, var(--carte), var(--carte-2));
+  color: var(--texte);
   box-shadow: var(--ombre-module);
 }
 .essai img {
   width: 100%;
-  height: 8.5rem;
+  height: 6.5rem;
   object-fit: cover;
   object-position: 50% 62%;
 }
@@ -191,39 +276,263 @@ a.fente:hover h3 {
 .essai h3 {
   font-weight: 700;
   font-size: 1.5rem;
-  color: var(--rouge);
+  color: var(--rouge-texte);
   letter-spacing: -0.02em;
 }
 .essai p {
   margin-top: var(--s-2);
   font-size: var(--t-small);
   line-height: 1.5;
-  color: var(--chrome-encre);
+  color: var(--texte-doux);
 }
-.essai dl,
-.identifiants {
-  margin: var(--s-4) 0;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--s-1) var(--s-4);
-  font-size: 0.9375rem;
+.essai .pill {
+  margin-top: var(--s-4);
 }
-.essai dt,
-.identifiants dt {
-  color: var(--chrome-encre);
+.ids {
+  font-size: var(--t-small);
+  color: var(--texte-doux);
 }
-.essai dd,
-.identifiants dd {
-  font-weight: 700;
+.ids b {
+  color: var(--texte);
+}
+.essai .ids {
+  margin-top: var(--s-3);
+}
+@media (max-height: 680px) and (min-width: 961px) {
+  .essai img {
+    display: none;
+  }
 }
 
-/* ---------- le sommaire (lists) ---------- */
-.sommaire {
-  width: 100%;
-  max-width: 76rem;
+/* ---------- the editor moment: markdown typed on the left, the page made on the right ---------- */
+@property --t {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.88; /* without motion: every line written, nothing fading */
+}
+.atelier {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  max-width: 80rem;
   margin: 0 auto;
   padding: var(--s-9) clamp(1.25rem, 4vw, 3rem) var(--s-8);
 }
+.sur {
+  font-size: var(--t-spec);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rouge-texte);
+}
+.atelier h2 {
+  margin-top: var(--s-3);
+  font-weight: 700;
+  font-size: var(--t-h1);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.atelier h2 em.accent {
+  color: var(--rouge-texte);
+}
+.atelier-texte > p:not(.sur, .ids) {
+  margin-top: var(--s-5);
+  max-width: 44ch;
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  color: var(--texte-doux);
+}
+.atelier-texte .pill {
+  margin-top: var(--s-6);
+}
+.atelier-texte .ids {
+  margin-top: var(--s-3);
+}
+.atelier-demo {
+  --T: calc(var(--t) * 10);
+  --fin: clamp(0, (9.9 - var(--T)) * 2, 1);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-4);
+  animation: atelier 11s linear infinite;
+}
+@keyframes atelier {
+  from {
+    --t: 0;
+  }
+  to {
+    --t: 1;
+  }
+}
+.ecran {
+  min-height: 22rem;
+  outline: 1px solid var(--filet);
+  box-shadow: 0 24px 60px rgb(28 16 19 / 0.22);
+}
+.ecran-barre {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 0.9rem;
+  font-size: var(--t-spec);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ecran-barre i {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+}
+.ecran-barre b {
+  margin-left: auto;
+}
+.ecran-source {
+  background: var(--encre);
+  color: #f6efe9;
+}
+.ecran-source pre {
+  padding: var(--s-4) var(--s-5) var(--s-5);
+  font: 500 0.9375rem/1.75 ui-monospace, "SF Mono", Menlo, monospace;
+  white-space: pre-wrap;
+}
+/* One line types per beat: the clip opens in steps, like keystrokes. */
+.frappe {
+  --p: calc(round(down, clamp(0, var(--T) - 0.6 - var(--i) * 1.5, 1) * 20, 1) / 20); /* whole steps: 0.05 is not exact */
+  display: block;
+  width: fit-content;
+  opacity: var(--fin);
+  clip-path: inset(-0.3em calc((1 - var(--p)) * 100%) -0.3em 0);
+}
+.frappe .m {
+  color: var(--beurre);
+}
+.ecran-page {
+  background: var(--fond);
+  color: var(--texte);
+}
+.ecran-page .ecran-barre {
+  background: var(--rouge);
+  color: var(--papier);
+}
+.ecran-corps {
+  padding: var(--s-5);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+.ecran-corps > * + * {
+  margin-top: var(--s-3);
+}
+.ecran-corps h3 {
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.ecran-corps ul {
+  padding-left: 1.2em;
+}
+.ecran-corps li::marker {
+  color: var(--rouge-texte);
+}
+.ecran-corps blockquote {
+  padding-left: var(--s-4);
+  border-left: 4px solid var(--beurre);
+  font-family: var(--f-accent);
+  font-style: italic;
+  font-size: 1.125rem;
+}
+.sort {
+  --q: clamp(0, (var(--T) - 1.4 - var(--i) * 1.5) * 3, 1);
+  opacity: calc(var(--q) * var(--fin));
+  translate: 0 calc((1 - var(--q)) * 0.6rem);
+}
+
+/* ---------- cards: the magazine grid and the end of an article ---------- */
+.a-lire,
+.sommaire {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: var(--s-8) clamp(1.25rem, 4vw, 3rem) var(--s-8);
+}
+.grille {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-8) clamp(1.5rem, 3vw, 3rem);
+  margin-top: var(--s-7);
+}
+.carte {
+  display: grid;
+  align-content: start;
+  gap: var(--s-4);
+}
+.carte-photo {
+  overflow: hidden;
+  aspect-ratio: 5 / 4;
+  background: var(--carte-2);
+}
+.carte-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.9s var(--ease-out);
+}
+.carte:hover .carte-photo img {
+  scale: 1.05;
+}
+.carte h3 {
+  margin-top: var(--s-2);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 1.1rem + 1vw, 2.125rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.carte h3 em.accent {
+  color: var(--rouge-texte);
+}
+.carte:hover h3 {
+  text-decoration: underline;
+  text-decoration-color: var(--rouge-texte);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.14em;
+}
+.carte .extrait {
+  max-width: 52ch;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--texte-doux);
+}
+.carte .spec {
+  color: var(--texte-pale);
+}
+.carte-grand {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+}
+.carte-grand .carte-photo {
+  aspect-ratio: 4 / 3;
+}
+.carte-grand h3 {
+  font-size: clamp(2rem, 1.2rem + 2.4vw, 3.5rem);
+  line-height: 1;
+}
+.carte-grand .carte-texte > * + * {
+  margin-top: var(--s-4);
+}
+.carte-texte > * + * {
+  margin-top: var(--s-3);
+}
+
+/* ---------- lists (archive, topic) ---------- */
 .sommaire-tete {
   display: flex;
   flex-wrap: wrap;
@@ -231,7 +540,7 @@ a.fente:hover h3 {
   justify-content: space-between;
   gap: var(--s-5);
   padding-bottom: var(--s-5);
-  border-bottom: 3px solid var(--encre);
+  border-bottom: 3px solid var(--texte);
 }
 .sommaire-tete h1,
 .sommaire-tete h2 {
@@ -248,15 +557,16 @@ a.fente:hover h3 {
 .themes a {
   padding: 0.45rem 0.95rem;
   border-radius: var(--r-pill);
-  border: 1.5px solid var(--encre);
+  border: 1.5px solid currentColor;
   font-weight: 600;
   font-size: 0.9375rem;
   transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out);
 }
 .themes a:hover,
 .themes a[aria-current="page"] {
-  background: var(--encre);
-  color: var(--papier);
+  background: var(--texte);
+  border-color: var(--texte);
+  color: var(--fond);
 }
 .ligne {
   display: grid;
@@ -264,14 +574,14 @@ a.fente:hover h3 {
   gap: var(--s-6);
   align-items: center;
   padding: var(--s-6) 0;
-  border-bottom: 1px solid rgb(28 16 19 / 0.16);
+  border-bottom: 1px solid var(--filet);
 }
 .ligne .no {
   font-weight: 700;
   font-size: 3.25rem;
   line-height: 0.9;
   letter-spacing: -0.03em;
-  color: var(--rouge);
+  color: var(--rouge-texte);
   font-variant-numeric: tabular-nums;
 }
 .ligne h3 {
@@ -282,34 +592,38 @@ a.fente:hover h3 {
   text-wrap: balance;
 }
 .ligne h3 em.accent {
-  color: var(--rouge);
+  color: var(--rouge-texte);
 }
 .ligne p {
   margin-top: var(--s-3);
   max-width: 60ch;
   font-size: 1.0625rem;
   line-height: 1.55;
-  color: #4a3b3e;
+  color: var(--texte-doux);
 }
 .ligne .spec {
   margin-top: var(--s-3);
-  color: #6b5a5d;
+  color: var(--texte-pale);
 }
 .ligne img {
   width: 10rem;
   aspect-ratio: 4 / 5;
   object-fit: cover;
+  transition: scale 0.9s var(--ease-out);
+}
+a.ligne:hover img {
+  scale: 1.04;
 }
 a.ligne:hover h3 {
   text-decoration: underline;
   text-underline-offset: 0.14em;
   text-decoration-thickness: 3px;
-  text-decoration-color: var(--rouge);
+  text-decoration-color: var(--rouge-texte);
 }
 .vide-liste {
   padding: var(--s-8) 0;
   font-size: 1.125rem;
-  color: #6b5a5d;
+  color: var(--texte-pale);
 }
 .suite {
   display: flex;
@@ -323,18 +637,19 @@ a.ligne:hover h3 {
   grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
   gap: 0;
   margin-top: var(--s-6);
-  border-top: 1px solid rgb(28 16 19 / 0.16);
+  border-top: 1px solid var(--filet);
 }
 .grille-themes a {
   display: flex;
   gap: var(--s-3);
   align-items: baseline;
   padding: var(--s-5) var(--s-2);
-  border-bottom: 1px solid rgb(28 16 19 / 0.16);
+  border-bottom: 1px solid var(--filet);
   font-family: var(--f-display);
   font-weight: 700;
   font-size: 1.75rem;
   letter-spacing: -0.02em;
+  transition: translate 0.4s var(--ease-out), color 0.3s var(--ease-out);
 }
 .grille-themes a span {
   display: inline-flex;
@@ -350,7 +665,13 @@ a.ligne:hover h3 {
   font-variant-numeric: tabular-nums;
 }
 .grille-themes a:hover {
-  color: var(--rouge);
+  color: var(--rouge-texte);
+  translate: 6px 0;
+}
+
+/* ---------- the phone's try bar ---------- */
+.barre-essai {
+  display: none;
 }
 
 /* ---------- sign-in ---------- */
@@ -382,7 +703,7 @@ a.ligne:hover h3 {
   flex-direction: column;
   justify-content: center;
   padding: var(--s-8) clamp(1.25rem, 5vw, 5rem);
-  background: var(--papier);
+  background: var(--fond);
 }
 .connexion-corps h1 {
   font-weight: 700;
@@ -395,11 +716,11 @@ a.ligne:hover h3 {
   max-width: 44ch;
   font-size: 1.125rem;
   line-height: 1.55;
-  color: #4a3b3e;
+  color: var(--texte-doux);
 }
 .visiteur {
   margin-top: var(--s-6);
-  background: linear-gradient(180deg, #fbfaf8, var(--chrome));
+  background: linear-gradient(180deg, var(--carte), var(--carte-2));
   padding: var(--s-5);
   max-width: 30rem;
 }
@@ -413,7 +734,20 @@ a.ligne:hover h3 {
 .visiteur h2 {
   font-weight: 700;
   font-size: 1.25rem;
-  color: var(--rouge);
+  color: var(--rouge-texte);
+}
+.identifiants {
+  margin: var(--s-4) 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-1) var(--s-4);
+  font-size: 0.9375rem;
+}
+.identifiants dt {
+  color: var(--texte-doux);
+}
+.identifiants dd {
+  font-weight: 700;
 }
 .champs {
   margin-top: var(--s-6);
@@ -435,9 +769,9 @@ a.ligne:hover h3 {
   width: 100%;
   min-height: 3rem;
   padding: 0.65rem 0.9rem;
-  border: 2px solid var(--encre);
+  border: 2px solid var(--texte);
   border-radius: 0;
-  background: var(--papier);
+  background: var(--fond);
   font-size: 1.0625rem;
 }
 .champ input:focus-visible,
@@ -449,13 +783,13 @@ a.ligne:hover h3 {
 }
 .champ .aide {
   font-size: 0.875rem;
-  color: #6b5a5d;
+  color: var(--texte-pale);
 }
 .erreurs {
   margin-top: var(--s-5);
   padding: var(--s-4) var(--s-5);
-  background: #fff0f2;
-  color: var(--rouge-nuit);
+  background: light-dark(#fff0f2, #3a1018);
+  color: light-dark(var(--rouge-nuit), #ffd6dc);
   max-width: 30rem;
 }
 .erreurs::before {
@@ -489,13 +823,13 @@ a.ligne:hover h3 {
   line-height: 1;
 }
 .perdu-texte h1 em.accent {
-  color: var(--rouge);
+  color: var(--rouge-texte);
 }
 .perdu-texte p {
   font-size: 1.125rem;
   line-height: 1.55;
   max-width: 40ch;
-  color: #4a3b3e;
+  color: var(--texte-doux);
 }
 .perdu-texte .pill {
   align-self: start;
@@ -537,21 +871,51 @@ a.ligne:hover h3 {
 @media (max-width: 960px) {
   .vitrine,
   .connexion,
-  .perdu {
+  .perdu,
+  .atelier {
     grid-template-columns: 1fr;
+    height: auto;
     min-height: 0;
   }
   .une {
-    min-height: 88svh;
+    min-height: 82svh;
   }
   .une > .photo {
     object-position: 50% 40%;
   }
-  .barre nav a:not(.garde) {
+  .marque {
+    font-size: 1.875rem;
+  }
+  .barre nav {
+    gap: var(--s-4);
+    font-size: 1rem;
+  }
+  /* sign-in stays in the footer and the try bar on phones */
+  .barre nav .connexion-lien {
     display: none;
   }
+  .mode button {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
   .essai {
-    margin-top: var(--s-6);
+    margin-top: var(--s-5);
+  }
+  .atelier {
+    padding-top: var(--s-8);
+  }
+  .atelier-demo {
+    grid-template-columns: 1fr;
+  }
+  .ecran {
+    min-height: 0;
+  }
+  .grille {
+    grid-template-columns: 1fr;
+    gap: var(--s-7);
+  }
+  .carte-grand {
+    grid-template-columns: 1fr;
   }
   .ligne {
     grid-template-columns: 3rem minmax(0, 1fr);
@@ -571,5 +935,30 @@ a.ligne:hover h3 {
   }
   .perdu-photo {
     height: 40svh;
+  }
+  .barre-essai {
+    position: fixed;
+    z-index: 30;
+    inset: auto 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-3) clamp(1.25rem, 4vw, 3rem) calc(var(--s-3) + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--fond) 86%, transparent);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--filet);
+  }
+  .barre-essai .pill {
+    min-height: 2.75rem;
+    padding: 0 var(--s-5);
+    font-size: 1rem;
+  }
+  .barre-essai .ids {
+    font-size: 0.8125rem;
+    text-align: right;
+  }
+  body:has(.barre-essai) .pied {
+    padding-bottom: 6.5rem;
   }
 }
