@@ -15,13 +15,14 @@ export const handler = define.handlers({
     const store = await getStore();
     const found = await store.getBySlug(ctx.state.locale, slug);
     if (!found) return ctx.next(); // the 404 page
-    const other = await store.counterpart(found.post);
     const dur = (performance.now() - started).toFixed(1);
 
     const etag = `W/"${found.post.id}-${found.post.updatedAt}-${BUILD}"`;
-    const headers = { etag, "server-timing": `store;dur=${dur}` };
-    if (ctx.req.headers.get("if-none-match") === etag) return new Response(null, { status: 304, headers });
-    return page({ ...found, other }, { headers });
+    // inm: whether a conditional request reached the app (on Deno Deploy, 304s did not happen).
+    const inm = ctx.req.headers.get("if-none-match");
+    const headers = { etag, "server-timing": `store;dur=${dur}, inm;desc="${inm ? "seen" : "none"}"` };
+    if (inm === etag) return new Response(null, { status: 304, headers });
+    return page(found, { headers });
   },
 });
 

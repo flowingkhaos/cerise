@@ -3,8 +3,9 @@
 //
 // Keys (times are UTC epoch ms):
 //   ["posts", id]                                  Post (metadata, no body)
-//   ["src", id, n] / ["html", id, n]               body chunks, CHUNK units each
-//   ["slug", locale, slug]                          id
+//   ["page", locale, slug, "m"]                    Post again, so an article is one read
+//   ["page", locale, slug, "h" | "s", n]           HTML / markdown chunks, CHUNK units each
+//   ["slug", locale, slug]                          { id, status }
 //   ["feed", locale, publishedAt, id]               PostSummary, published only
 //   ["tagfeed", locale, topic, publishedAt, id]     PostSummary, published only
 //   ["sessions", sid]                               Session, expires by itself
@@ -19,7 +20,9 @@ import type { Locale, Post, PostInput, PostSummary, Role, Session, Status } from
  * is ~60 KB, and a 100,000-unit post plus its HTML stays under one atomic write. */
 export const CHUNK = 30_000;
 export const MAX_SOURCE = 100_000;
-const SEED_VERSION = 1;
+// Bumping it wipes and reseeds the store on the next request: the lever for a key-layout change.
+// v2 (2026-10-26): article bodies keyed by slug, one read per page (measured 237 ms → see below).
+const SEED_VERSION = 2;
 const SESSION_MS = 24 * 60 * 60 * 1000;
 export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -45,11 +48,23 @@ function summary(p: Post): PostSummary {
   return rest;
 }
 
-async function readChunks(kv: Deno.Kv, kind: "src" | "html", id: string): Promise<string> {
+interface SlugRef {
+  id: string;
+  status: Status;
+}
+
+const page = (p: { locale: Locale; slug: string }) => ["page", p.locale, p.slug];
+
+async function readSource(kv: Deno.Kv, p: Post): Promise<string> {
   let out = "";
-  for await (const e of kv.list<string>({ prefix: [kind, id] })) out += e.value;
+  for await (const e of kv.list<string>({ prefix: [...page(p), "s"] })) out += e.value;
   return out;
 }
+
+/** Public reads come from the nearest replica. Measured 2026-10-26 on Deploy: five strong reads
+ * in a row cost 237 ms (p75) before an article could render. A reader may see a publish up to
+ * about a second late, inside the 60 s browser cache anyway. Admin reads stay strong. */
+const NEAR: Deno.KvListOptions & { consistency: Deno.KvConsistencyLevel } = { consistency: "eventual" };
 
 export interface Page<T> {
   items: T[];
@@ -82,15 +97,19 @@ export function createStore(kv: Deno.Kv) {
     const op = kv.atomic();
     if (prev) op.check(prev);
     const slugKey = ["slug", next.locale, next.slug];
-    const owner = await kv.get<string>(slugKey);
-    if (owner.value && owner.value !== next.id) return false;
+    const owner = await kv.get<SlugRef>(slugKey);
+    if (owner.value && owner.value.id !== next.id) return false;
     op.check(owner);
 
     const old = prev?.value;
     if (old) {
-      for (let i = src.length; i < old.srcChunks; i++) op.delete(["src", old.id, i]);
-      for (let i = out.length; i < old.htmlChunks; i++) op.delete(["html", old.id, i]);
-      if (old.slug !== next.slug || old.locale !== next.locale) op.delete(["slug", old.locale, old.slug]);
+      const moved = old.slug !== next.slug || old.locale !== next.locale;
+      for (let i = moved ? 0 : src.length; i < old.srcChunks; i++) op.delete([...page(old), "s", i]);
+      for (let i = moved ? 0 : out.length; i < old.htmlChunks; i++) op.delete([...page(old), "h", i]);
+      if (moved) {
+        op.delete(["slug", old.locale, old.slug]);
+        op.delete([...page(old), "m"]);
+      }
       if (old.status === "published") {
         op.delete(["feed", old.locale, old.publishedAt, old.id]);
         for (const t of old.topics) op.delete(["tagfeed", old.locale, t, old.publishedAt, old.id]);
@@ -99,9 +118,10 @@ export function createStore(kv: Deno.Kv) {
     next.srcChunks = src.length;
     next.htmlChunks = out.length;
     op.set(["posts", next.id], next);
-    src.forEach((c, i) => op.set(["src", next.id, i], c));
-    out.forEach((c, i) => op.set(["html", next.id, i], c));
-    op.set(slugKey, next.id);
+    op.set([...page(next), "m"], next);
+    src.forEach((c, i) => op.set([...page(next), "s", i], c));
+    out.forEach((c, i) => op.set([...page(next), "h", i], c));
+    op.set(slugKey, { id: next.id, status: next.status } satisfies SlugRef);
     if (next.status === "published") {
       const s = summary(next);
       op.set(["feed", next.locale, next.publishedAt, next.id], s);
@@ -119,7 +139,7 @@ export function createStore(kv: Deno.Kv) {
   }
 
   async function wipePosts() {
-    for (const prefix of ["posts", "src", "html", "slug", "feed", "tagfeed"]) {
+    for (const prefix of ["posts", "page", "slug", "feed", "tagfeed", "src", "html"]) {
       const keys: Deno.KvKey[] = [];
       for await (const e of kv.list({ prefix: [prefix] })) keys.push(e.key);
       for (let i = 0; i < keys.length; i += 500) {
@@ -172,35 +192,44 @@ export function createStore(kv: Deno.Kv) {
   return {
     // ---------- reads (public) ----------
     async listPublished(locale: Locale, cursor?: string, limit = 20): Promise<Page<PostSummary>> {
-      const it = kv.list<PostSummary>({ prefix: ["feed", locale] }, { reverse: true, limit, cursor });
+      const it = kv.list<PostSummary>({ prefix: ["feed", locale] }, { ...NEAR, reverse: true, limit, cursor });
       const items: PostSummary[] = [];
       for await (const e of it) items.push(e.value);
       return { items, cursor: items.length === limit ? it.cursor : undefined };
     },
 
     async listByTopic(locale: Locale, topic: string, cursor?: string, limit = 20): Promise<Page<PostSummary>> {
-      const it = kv.list<PostSummary>({ prefix: ["tagfeed", locale, topic] }, { reverse: true, limit, cursor });
+      const it = kv.list<PostSummary>({ prefix: ["tagfeed", locale, topic] }, {
+        ...NEAR,
+        reverse: true,
+        limit,
+        cursor,
+      });
       const items: PostSummary[] = [];
       for await (const e of it) items.push(e.value);
       return { items, cursor: items.length === limit ? it.cursor : undefined };
     },
 
-    /** A published post with its HTML and source, or null. */
+    /** A published post with its HTML, its source and its other-language twin, or null.
+     * One round trip: the page prefix and the twin's slug key are read in parallel. */
     async getBySlug(locale: Locale, slug: string) {
-      const id = (await kv.get<string>(["slug", locale, slug])).value;
-      if (!id) return null;
-      const post = (await kv.get<Post>(["posts", id])).value;
+      const other: Locale = locale === "fr" ? "en" : "fr";
+      const rows: Deno.KvEntry<unknown>[] = [];
+      const [, twin] = await Promise.all([
+        (async () => {
+          for await (const e of kv.list({ prefix: ["page", locale, slug] }, NEAR)) rows.push(e);
+        })(),
+        kv.get<SlugRef>(["slug", other, slug], NEAR),
+      ]);
+      let post: Post | null = null, html = "", source = "";
+      for (const e of rows) { // sorted: "h" chunks, then "m", then "s" chunks
+        if (e.key[3] === "m") post = e.value as Post;
+        else if (e.key[3] === "h") html += e.value as string;
+        else source += e.value as string;
+      }
       if (!post || post.status !== "published") return null;
-      const [html, source] = await Promise.all([readChunks(kv, "html", id), readChunks(kv, "src", id)]);
-      return { post, html, source };
-    },
-
-    /** The same slug in the other language, when it is published. */
-    async counterpart(post: PostSummary): Promise<PostSummary | null> {
-      const other: Locale = post.locale === "fr" ? "en" : "fr";
-      const id = (await kv.get<string>(["slug", other, post.slug])).value;
-      const p = id ? (await kv.get<Post>(["posts", id])).value : null;
-      return p?.status === "published" ? summary(p) : null;
+      const twinPublished = twin.value?.status === "published";
+      return { post, html, source, other: twinPublished ? { locale: other, slug } : null };
     },
 
     // ---------- reads (admin; visitors see the same screens) ----------
@@ -214,7 +243,7 @@ export function createStore(kv: Deno.Kv) {
 
     async getForEdit(id: string) {
       const post = (await kv.get<Post>(["posts", id])).value;
-      return post ? { post, source: await readChunks(kv, "src", id) } : null;
+      return post ? { post, source: await readSource(kv, post) } : null;
     },
 
     // ---------- writes: admin only ----------
@@ -263,9 +292,10 @@ export function createStore(kv: Deno.Kv) {
       const prev = await kv.get<Post>(["posts", id]);
       const p = prev.value;
       if (!p) return false;
-      const op = kv.atomic().check(prev).delete(["posts", id]).delete(["slug", p.locale, p.slug]);
-      for (let i = 0; i < p.srcChunks; i++) op.delete(["src", id, i]);
-      for (let i = 0; i < p.htmlChunks; i++) op.delete(["html", id, i]);
+      const op = kv.atomic().check(prev).delete(["posts", id]).delete(["slug", p.locale, p.slug])
+        .delete([...page(p), "m"]);
+      for (let i = 0; i < p.srcChunks; i++) op.delete([...page(p), "s", i]);
+      for (let i = 0; i < p.htmlChunks; i++) op.delete([...page(p), "h", i]);
       if (p.status === "published") {
         op.delete(["feed", p.locale, p.publishedAt, id]);
         for (const t of p.topics) op.delete(["tagfeed", p.locale, t, p.publishedAt, id]);
@@ -279,7 +309,7 @@ export function createStore(kv: Deno.Kv) {
       const posts = [];
       for await (const e of kv.list<Post>({ prefix: ["posts"] })) {
         const { toc: _t, srcChunks: _s, htmlChunks: _h, ...meta } = e.value;
-        posts.push({ ...meta, source: await readChunks(kv, "src", e.value.id) });
+        posts.push({ ...meta, source: await readSource(kv, e.value) });
       }
       return { app: "cerise", exportedAt: new Date().toISOString(), posts };
     },
@@ -290,9 +320,11 @@ export function createStore(kv: Deno.Kv) {
       await seed();
     },
 
-    /** Loads content/*.md into an empty store. A deploy never overwrites edits. */
+    /** Loads content/*.md into an empty store. A deploy never overwrites edits, except a
+     * SEED_VERSION bump, which is how a key-layout change reaches an existing store. */
     async ensureSeeded() {
-      if ((await kv.get(["meta", "seeded"])).value) return;
+      const seeded = (await kv.get<{ version: number }>(["meta", "seeded"])).value;
+      if (seeded?.version === SEED_VERSION) return;
       await wipePosts();
       await seed();
     },

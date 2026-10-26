@@ -31,7 +31,8 @@ Deno.test("seed loads every post, newest first, per locale", async () => {
   assertEquals(fr.items.map((p) => p.number), [6, 5, 4, 3, 2, 1]);
   const page = await store.getBySlug("fr", "ecrivez-comme-vous-parlez");
   assert(page?.html.includes("<h2"));
-  assertEquals((await store.counterpart(page!.post))?.locale, "en");
+  assertEquals(page!.other?.locale, "en");
+  assert(page!.source.includes("## "), "the markdown comes back with the page");
   // a second call never reseeds
   const before = await snapshot(kv);
   await store.ensureSeeded();
@@ -74,6 +75,10 @@ Deno.test("slugs are unique per locale; edits move the slug and feeds", async ()
   assert(!clash.ok);
   const en = await store.savePost("admin", null, input({ locale: "en" }));
   assert(en.ok, "same slug in the other locale is its translation");
+  assertEquals((await store.getBySlug("fr", "un-essai"))?.other?.locale, "en", "the published twin is linked");
+  const draftTwin = await store.savePost("admin", en.id, input({ locale: "en", status: "draft" }));
+  assert(draftTwin.ok);
+  assertEquals((await store.getBySlug("fr", "un-essai"))?.other, null, "a draft twin is not linked");
   const moved = await store.savePost("admin", a.id, input({ slug: "nouvelle-adresse", topics: ["outils"] }));
   assert(moved.ok);
   assertEquals(await store.getBySlug("fr", "un-essai"), null);
@@ -132,5 +137,18 @@ Deno.test("sessions expire and can be deleted", async () => {
   await store.deleteSession(sid);
   assertEquals(await store.getSession(sid), null);
   assertEquals(await store.getSession("nope"), null);
+  kv.close();
+});
+
+Deno.test("a SEED_VERSION bump migrates an old store to the current layout", async () => {
+  const { kv, store } = await fresh();
+  await kv.set(["meta", "seeded"], { version: 1, at: 0 });
+  await kv.set(["src", "old-id", 0], "old layout");
+  await kv.set(["html", "old-id", 0], "<p>old layout</p>");
+  await store.ensureSeeded();
+  assertEquals((await kv.get(["src", "old-id", 0])).value, null);
+  assertEquals((await kv.get(["html", "old-id", 0])).value, null);
+  assertEquals((await store.listPublished("fr")).items.length, 6);
+  assert((await store.getBySlug("en", "en-un-clin-d-oeil"))?.html.includes("<h2"));
   kv.close();
 });
