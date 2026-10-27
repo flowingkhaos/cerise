@@ -1,0 +1,358 @@
+{
+ "docs": [
+  {
+   "id": 4,
+   "title": "D\u2019o\u00f9 viennent *ces articles*",
+   "excerpt": "Six articles de ce blogue vivent dans des fichiers. Les autres, comme celui-ci, viennent d\u2019un CMS partag\u00e9. Les rayons X montrent lequel est lequel.",
+   "hero": {
+    "id": 8,
+    "alt": "Des \u00e9chantillons de vernis \u00e0 ongles en \u00e9ventail, dans un salon de beaut\u00e9",
+    "credit": "Pexels, photo 3997359",
+    "prefix": "",
+    "_objectKey": null,
+    "createdBy": {
+     "relationTo": "users",
+     "value": 1
+    },
+    "updatedBy": {
+     "relationTo": "users",
+     "value": 1
+    },
+    "updatedAt": "2026-10-27T22:15:37.249Z",
+    "createdAt": "2026-10-27T22:14:41.894Z",
+    "url": "http://localhost:4620/api/media/file/d-ou-viennent-ces-articles-fr-original-1.webp",
+    "thumbnailURL": null,
+    "filename": "d-ou-viennent-ces-articles-fr-original-1.webp",
+    "mimeType": "image/webp",
+    "filesize": 152150,
+    "width": 1600,
+    "height": 2400,
+    "original": {
+     "filename": "d-ou-viennent-ces-articles-fr-original-1.webp",
+     "url": "http://localhost:4620/api/media/file/d-ou-viennent-ces-articles-fr-original-1.webp",
+     "mimeType": "image/webp",
+     "filesize": 152150,
+     "width": 1600,
+     "height": 2400,
+     "prefix": null,
+     "_objectKey": null
+    },
+    "focalX": 50,
+    "focalY": 50
+   },
+   "category": "Coulisses",
+   "publishedAt": "2026-10-27T15:00:00.000Z",
+   "body": "Ce blogue a deux sources.\n\nLes six premiers articles sont des fichiers markdown rang\u00e9s dans le d\u00e9p\u00f4t du site, dans `content/fr/`. Au premier d\u00e9marrage, cerise les copie dans Deno KV, l\u2019entrep\u00f4t de donn\u00e9es int\u00e9gr\u00e9 \u00e0 son h\u00e9bergeur. Quand l\u2019administratrice les modifie dans l\u2019\u00e9diteur de cerise, c\u2019est cette copie qui change.\n\nLes autres, dont celui-ci, sont \u00e9crits dans Payload, un CMS h\u00e9berg\u00e9 sur Google Cloud Run. Ce m\u00eame CMS sert aussi les sites de Linteau et de Clapet. Chaque article y porte un domaine, `blog-demo`, pour que chaque site ne lise que les siens.\n\n\u00c0 l\u2019\u0153il, rien ne les distingue : m\u00eame gabarit, m\u00eame rendu. Allumez les rayons X avec le bouton \u00ab Rayons X \u00bb. Chaque article affiche alors sa source, l\u2019endroit o\u00f9 il est rang\u00e9 et le chemin qu\u2019il prend jusqu\u2019\u00e0 vous.\n",
+   "meta": {
+    "title": null,
+    "description": "Six articles de ce blogue vivent dans des fichiers. Les autres, comme celui-ci, viennent d\u2019un CMS partag\u00e9. Les rayons X montrent lequel est lequel.",
+    "image": null
+   },
+   "domain": {
+    "id": 2,
+    "name": "Blog demo",
+    "slug": "blog-demo",
+    "url": null,
+    "kind": "blog",
+    "languages": [
+     "fr",
+     "en"
+    ],
+    "defaultLocale": "fr",
+    "status": "planned",
+    "pages": {
+     "docs": [],
+     "hasNextPage": false
+    },
+    "articles": {
+     "docs": [
+      9,
+      8,
+      7,
+      6,
+      5,
+      4,
+      2,
+      1
+     ],
+     "hasNextPage": false
+    },
+    "docs": {
+     "docs": [],
+     "hasNextPage": false
+    },
+    "updatedAt": "2026-10-26T23:46:03.337Z",
+    "createdAt": "2026-10-26T23:38:33.326Z"
+   },
+   "locale": "fr",
+   "slug": "d-ou-viennent-ces-articles",
+   "translationOf": null,
+   "createdBy": null,
+   "updatedBy": {
+    "relationTo": "users",
+    "value": 1
+   },
+   "updatedAt": "2026-10-27T22:15:37.572Z",
+   "createdAt": "2026-10-27T22:14:21.412Z",
+   "_status": "published"
+  },
+  {
+   "id": 5,
+   "title": "Du markdown *\u00e0 la page*",
+   "excerpt": "Les deux sources passent par le m\u00eame moteur de rendu. Seul le moment change : \u00e0 l\u2019enregistrement pour l\u2019une, \u00e0 la lecture pour l\u2019autre.",
+   "hero": {
+    "id": 9,
+    "alt": "Des traits de maquillage et de rouge \u00e0 l\u00e8vres en gros plan, sur fond blanc",
+    "credit": "Pexels, photo 24709900",
+    "prefix": "",
+    "_objectKey": null,
+    "createdBy": {
+     "relationTo": "users",
+     "value": 1
+    },
+    "updatedBy": {
+     "relationTo": "users",
+     "value": 1
+    },
+    "updatedAt": "2026-10-27T22:15:37.943Z",
+    "createdAt": "2026-10-27T22:14:42.899Z",
+    "url": "http://localhost:4620/api/media/file/du-markdown-a-la-page-fr-original-1.webp",
+    "thumbnailURL": null,
+    "filename": "du-markdown-a-la-page-fr-original-1.webp",
+    "mimeType": "image/webp",
+    "filesize": 257020,
+    "width": 1600,
+    "height": 2000,
+    "original": {
+     "filename": "du-markdown-a-la-page-fr-original-1.webp",
+     "url": "http://localhost:4620/api/media/file/du-markdown-a-la-page-fr-original-1.webp",
+     "mimeType": "image/webp",
+     "filesize": 257020,
+     "width": 1600,
+     "height": 2000,
+     "prefix": null,
+     "_objectKey": null
+    },
+    "focalX": 50,
+    "focalY": 50
+   },
+   "category": "Coulisses",
+   "publishedAt": "2026-10-27T14:00:00.000Z",
+   "body": "Un article commence toujours en markdown : du texte simple, avec des di\u00e8ses pour les titres et des ast\u00e9risques pour l\u2019italique.\n\nPour les articles du d\u00e9p\u00f4t, cerise fait le travail une seule fois, au moment de l\u2019enregistrement. markdown-it transforme le texte en HTML, un filtre retire tout ce qui n\u2019est pas permis, puis le r\u00e9sultat est rang\u00e9 dans Deno KV, pr\u00eat \u00e0 servir. Une visite lit le HTML d\u00e9j\u00e0 fait.\n\nPour les articles du CMS, Payload garde le markdown. cerise le lit par l\u2019API du CMS, le passe dans le m\u00eame markdown-it et le m\u00eame filtre, puis garde la page 60 secondes en m\u00e9moire.\n\nDans les deux cas, la page arrive en HTML et en CSS, sans une ligne de JavaScript.\n",
+   "meta": {
+    "title": null,
+    "description": "Les deux sources passent par le m\u00eame moteur de rendu. Seul le moment change : \u00e0 l\u2019enregistrement pour l\u2019une, \u00e0 la lecture pour l\u2019autre.",
+    "image": null
+   },
+   "domain": {
+    "id": 2,
+    "name": "Blog demo",
+    "slug": "blog-demo",
+    "url": null,
+    "kind": "blog",
+    "languages": [
+     "fr",
+     "en"
+    ],
+    "defaultLocale": "fr",
+    "status": "planned",
+    "pages": {
+     "docs": [],
+     "hasNextPage": false
+    },
+    "articles": {
+     "docs": [
+      9,
+      8,
+      7,
+      6,
+      5,
+      4,
+      2,
+      1
+     ],
+     "hasNextPage": false
+    },
+    "docs": {
+     "docs": [],
+     "hasNextPage": false
+    },
+    "updatedAt": "2026-10-26T23:46:03.337Z",
+    "createdAt": "2026-10-26T23:38:33.326Z"
+   },
+   "locale": "fr",
+   "slug": "du-markdown-a-la-page",
+   "translationOf": null,
+   "createdBy": null,
+   "updatedBy": {
+    "relationTo": "users",
+    "value": 1
+   },
+   "updatedAt": "2026-10-27T22:15:38.086Z",
+   "createdAt": "2026-10-27T22:14:21.867Z",
+   "_status": "published"
+  },
+  {
+   "id": 6,
+   "title": "Rapide aujourd\u2019hui, *pr\u00eat pour demain*",
+   "excerpt": "Une lecture par article, rien \u00e0 ex\u00e9cuter dans le navigateur, et un seul CMS pour plusieurs sites.",
+   "hero": {
+    "id": 10,
+    "alt": "Des flacons de vernis \u00e0 ongles de toutes les couleurs, align\u00e9s sur une surface blanche",
+    "credit": "Pexels, photo 29228977",
+    "prefix": "",
+    "_objectKey": null,
+    "createdBy": {
+     "relationTo": "users",
+     "value": 1
+    },
+    "updatedBy": {
+     "relationTo": "users",
+     "value": 1
+    },
+    "updatedAt": "2026-10-27T22:15:38.343Z",
+    "createdAt": "2026-10-27T22:14:44.107Z",
+    "url": "http://localhost:4620/api/media/file/rapide-aujourd-hui-pret-pour-demain-fr-original-1.webp",
+    "thumbnailURL": null,
+    "filename": "rapide-aujourd-hui-pret-pour-demain-fr-original-1.webp",
+    "mimeType": "image/webp",
+    "filesize": 49896,
+    "width": 1600,
+    "height": 2000,
+    "original": {
+     "filename": "rapide-aujourd-hui-pret-pour-demain-fr-original-1.webp",
+     "url": "http://localhost:4620/api/media/file/rapide-aujourd-hui-pret-pour-demain-fr-original-1.webp",
+     "mimeType": "image/webp",
+     "filesize": 49896,
+     "width": 1600,
+     "height": 2000,
+     "prefix": null,
+     "_objectKey": null
+    },
+    "focalX": 50,
+    "focalY": 50
+   },
+   "category": "Coulisses",
+   "publishedAt": "2026-10-27T13:00:00.000Z",
+   "body": "Trois choix font la vitesse de ce blogue.\n\n**Une lecture par article.** Un article du d\u00e9p\u00f4t tient en une seule lecture dans Deno KV, sur la copie la plus proche : environ 50 ms, mesur\u00e9es en production.\n\n**Une m\u00e9moire courte pour le CMS.** Les articles de Payload restent 60 secondes en m\u00e9moire. Si le CMS tarde plus de 2,5 secondes, par exemple au r\u00e9veil de Cloud Run, le blogue sert la derni\u00e8re bonne copie et finit la lecture en arri\u00e8re-plan.\n\n**Z\u00e9ro JavaScript public.** Le navigateur re\u00e7oit du HTML et du CSS. Il n\u2019a rien \u00e0 t\u00e9l\u00e9charger ni \u00e0 ex\u00e9cuter avant d\u2019afficher le texte.\n\nEt pour grandir : un nouveau site n\u2019a besoin que d\u2019un domaine dans le CMS. Les auteurs gardent un seul endroit pour \u00e9crire, et chaque site garde sa vitesse.\n",
+   "meta": {
+    "title": null,
+    "description": "Une lecture par article, rien \u00e0 ex\u00e9cuter dans le navigateur, et un seul CMS pour plusieurs sites.",
+    "image": null
+   },
+   "domain": {
+    "id": 2,
+    "name": "Blog demo",
+    "slug": "blog-demo",
+    "url": null,
+    "kind": "blog",
+    "languages": [
+     "fr",
+     "en"
+    ],
+    "defaultLocale": "fr",
+    "status": "planned",
+    "pages": {
+     "docs": [],
+     "hasNextPage": false
+    },
+    "articles": {
+     "docs": [
+      9,
+      8,
+      7,
+      6,
+      5,
+      4,
+      2,
+      1
+     ],
+     "hasNextPage": false
+    },
+    "docs": {
+     "docs": [],
+     "hasNextPage": false
+    },
+    "updatedAt": "2026-10-26T23:46:03.337Z",
+    "createdAt": "2026-10-26T23:38:33.326Z"
+   },
+   "locale": "fr",
+   "slug": "rapide-aujourd-hui-pret-pour-demain",
+   "translationOf": null,
+   "createdBy": null,
+   "updatedBy": {
+    "relationTo": "users",
+    "value": 1
+   },
+   "updatedAt": "2026-10-27T22:15:38.554Z",
+   "createdAt": "2026-10-27T22:14:22.247Z",
+   "_status": "published"
+  },
+  {
+   "id": 1,
+   "title": "Un seul endroit pour tous vos contenus",
+   "excerpt": "Votre site, votre boutique et votre blogue peuvent lire le m\u00eame CMS.",
+   "hero": null,
+   "category": "M\u00e9thode",
+   "publishedAt": "2026-10-26T12:00:00.000Z",
+   "body": "Vous modifiez une page une fois. Elle change partout o\u00f9 elle para\u00eet.\n\n## Comment\n\nChaque page, article et document porte le nom du site qui l\u2019affiche. Un seul CMS sert donc plusieurs sites.\n",
+   "meta": {
+    "title": null,
+    "description": null,
+    "image": null
+   },
+   "domain": {
+    "id": 2,
+    "name": "Blog demo",
+    "slug": "blog-demo",
+    "url": null,
+    "kind": "blog",
+    "languages": [
+     "fr",
+     "en"
+    ],
+    "defaultLocale": "fr",
+    "status": "planned",
+    "pages": {
+     "docs": [],
+     "hasNextPage": false
+    },
+    "articles": {
+     "docs": [
+      9,
+      8,
+      7,
+      6,
+      5,
+      4,
+      2,
+      1
+     ],
+     "hasNextPage": false
+    },
+    "docs": {
+     "docs": [],
+     "hasNextPage": false
+    },
+    "updatedAt": "2026-10-26T23:46:03.337Z",
+    "createdAt": "2026-10-26T23:38:33.326Z"
+   },
+   "locale": "fr",
+   "slug": "un-seul-endroit-pour-vos-contenus",
+   "translationOf": null,
+   "createdBy": null,
+   "updatedAt": "2026-10-26T23:46:06.137Z",
+   "createdAt": "2026-10-26T23:38:39.145Z",
+   "_status": "published"
+  }
+ ],
+ "hasNextPage": false,
+ "hasPrevPage": false,
+ "limit": 10,
+ "nextPage": null,
+ "page": 1,
+ "pagingCounter": 1,
+ "prevPage": null,
+ "totalDocs": 4,
+ "totalPages": 1
+}

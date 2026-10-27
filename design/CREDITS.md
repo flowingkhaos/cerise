@@ -36,3 +36,14 @@ not required; we credit them anyway. Each file's source is in its `.webp.json` s
 - **Sentient** italic — the one accent phrase per title. ITF Free Font License: it may not be put
   in a public repository, so it is **not** in this repo; pages load it from Fontshare's servers
   (`api.fontshare.com`), which that licence allows.
+
+## CMS article covers (`scripts/cms-articles/covers/`)
+
+Stock photos from Pexels, chosen 2026-10-27 for the three articles in the showcase CMS. Pexels License: free to use and
+modify, attribution not required. Uploaded to the CMS media library by `scripts/cms-articles.py`.
+
+| File | Pexels | Photo |
+|---|---|---|
+| `d-ou-viennent-ces-articles.webp` | [3997359](https://www.pexels.com/photo/white-red-and-blue-hanging-decor-3997359/) | Nail polish samples displayed in a beauty salon |
+| `du-markdown-a-la-page.webp` | [24709900](https://www.pexels.com/photo/samples-of-beauty-products-24709900/) | Makeup smears and swatches on a white background |
+| `rapide-aujourd-hui-pret-pour-demain.webp` | [29228977](https://www.pexels.com/photo/colorful-nail-polish-bottles-displayed-on-white-surface-29228977/) | Nail polish bottles on a reflective white surface |
