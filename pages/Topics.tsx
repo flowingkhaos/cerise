@@ -21,7 +21,7 @@ export const TopicsIndex = define.page<typeof indexHandler>(function TopicsIndex
   const { locale } = state;
   const d = t(locale);
   return (
-    <PageShell locale={locale} path={url.pathname} current="topics" toast={state.toast}>
+    <PageShell locale={locale} path={url.pathname} xray={state.xray} current="topics" toast={state.toast}>
       <Seo locale={locale} url={url} title={`${d.nav.topics} — cerise`} description={d.siteDescription} />
       <section class="sommaire">
         <div class="sommaire-tete">
@@ -60,7 +60,7 @@ export const TopicPage = define.page<typeof topicHandler>(function TopicPage({ d
   const d = t(locale);
   const label = topicLabel(locale, data.topic);
   return (
-    <PageShell locale={locale} path={url.pathname} current="topics" toast={state.toast}>
+    <PageShell locale={locale} path={url.pathname} xray={state.xray} current="topics" toast={state.toast}>
       <Seo locale={locale} url={url} title={`${d.topic.title(label)} — cerise`} description={d.siteDescription} />
       <section class="sommaire">
         <div class="sommaire-tete">

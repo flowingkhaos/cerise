@@ -4,6 +4,8 @@ import { localeOf } from "./lib/i18n.ts";
 import { getStore } from "./lib/store.ts";
 import { readFlash } from "./lib/flash.ts";
 import { clientIp, guard, harden, memoryLimiter, tripwire } from "./lib/guard.ts";
+import { getCms } from "./lib/cms.ts";
+import { fillLegend, XRAY_COOKIE } from "./lib/xray.ts";
 
 export const app = new App<State>();
 
@@ -13,9 +15,12 @@ export const app = new App<State>();
 let unsafe: string[] | undefined;
 const limiter = memoryLimiter(30, 60_000);
 const BIG_BODY = /^\/(en\/)?admin\/posts/;
-// Our files only, plus Fontshare for the Sentient accent (its licence keeps it out of the repo).
-const CSP_EXTRA =
-  "; img-src 'self' data:; font-src 'self' https://cdn.fontshare.com; style-src 'self' 'unsafe-inline' https://api.fontshare.com";
+// Our files only, plus Fontshare for the Sentient accent (its licence keeps it out of the repo), plus the
+// showcase CMS's media for its articles' photos (lib/cms.ts keeps only photos from that host).
+let cspExtra: string | undefined;
+const csp = () =>
+  cspExtra ??= `; img-src 'self' data:${getCms().base ? ` ${new URL(getCms().base!).origin}` : ""}` +
+    "; font-src 'self' https://cdn.fontshare.com; style-src 'self' 'unsafe-inline' https://api.fontshare.com";
 
 app.use(async (ctx) => {
   unsafe ??= tripwire(Deno.env.toObject());
@@ -27,7 +32,7 @@ app.use(async (ctx) => {
   const maxBody = BIG_BODY.test(ctx.url.pathname) ? 262_144 : 65_536;
   const no = await guard(ctx.req, ip, { limiter, maxBody });
   const res = harden(no ?? await ctx.next());
-  res.headers.set("content-security-policy", res.headers.get("content-security-policy") + CSP_EXTRA);
+  res.headers.set("content-security-policy", res.headers.get("content-security-policy") + csp());
   return res;
 });
 
@@ -44,7 +49,10 @@ app.use(async (ctx) => {
     res.headers.set("cache-control", "public, max-age=31536000, immutable");
   } else if (path.startsWith("/img/")) {
     res.headers.set("cache-control", "public, max-age=86400");
-  } else if (PRIVATE.test(path) || res.headers.has("set-cookie") || path === "/healthz") {
+  } else if (
+    PRIVATE.test(path) || res.headers.has("set-cookie") || path === "/healthz" ||
+    XRAY_COOKIE.test(ctx.req.headers.get("cookie") ?? "") // an X-ray page is one visitor's, never a shared copy
+  ) {
     res.headers.set("cache-control", "private, no-store");
   } else if (res.status === 200 && /^text\/html|xml/.test(type)) {
     res.headers.set("cache-control", "public, max-age=60, stale-while-revalidate=600");
@@ -84,9 +92,17 @@ app.use(async (ctx) => {
     ? "light"
     : (ctx.req.headers.get("cookie") ?? "").match(/(?:^|;\s*)cerise_mode=(light|dark)/)?.[1] as "light" | "dark" ??
       undefined;
+  ctx.state.xray = !/^\/(en\/)?admin(\/|$)/.test(ctx.url.pathname) &&
+    XRAY_COOKIE.test(ctx.req.headers.get("cookie") ?? "");
   const flash = readFlash(ctx.req);
   ctx.state.toast = flash ?? undefined;
-  const res = await ctx.next();
+  let res = await ctx.next();
+  if (ctx.state.xray && (res.headers.get("content-type") ?? "").startsWith("text/html")) {
+    const headers = new Headers(res.headers);
+    headers.delete("content-length");
+    // The legend counts the tags the page actually rendered.
+    res = new Response(fillLegend(await res.text()), { status: res.status, statusText: res.statusText, headers });
+  }
   if (flash) res.headers.append("set-cookie", "cerise_flash=; Max-Age=0; Path=/; SameSite=Lax");
   return res;
 });

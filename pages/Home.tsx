@@ -1,14 +1,18 @@
 // The vitrine: the newest post fills the first screen, two more and the try strip beside it;
 // then the editor moment, then every other post once, as a magazine. No post is shown twice.
+// Two sources: Deno KV (cerise's own posts) and the shared Payload CMS, read in parallel. The lead is always
+// the newest KV post (its one-tap editor edits KV only); the CMS articles join the rest by date.
 import { page } from "fresh";
 import { define } from "../utils.ts";
 import { getStore } from "../lib/store.ts";
+import { getCms } from "../lib/cms.ts";
 import { VISITOR } from "../lib/auth.ts";
 import { fmtDate, href, t, topicLabel } from "../lib/i18n.ts";
 import {
   Card,
   coverName,
   Footer,
+  kicker,
   Masthead,
   PostRow,
   Seo,
@@ -18,12 +22,25 @@ import {
   TryForm,
   VisitorIds,
 } from "../components/ui.tsx";
+import { cmsRead, PhotoTag, Readout, Rx, SourceTag, Tag, vise, XrayRow } from "../components/xray.tsx";
+
+/** How long a read took, beside its result. */
+async function timed<T>(p: Promise<T>): Promise<[T, number]> {
+  const started = performance.now();
+  const v = await p;
+  return [v, performance.now() - started];
+}
 
 export const handler = define.handlers({
   async GET(ctx) {
     const store = await getStore();
-    const { items, cursor } = await store.listPublished(ctx.state.locale, undefined, 12);
-    return page({ items, cursor });
+    const [[{ items, cursor }, kvMs], cms] = await Promise.all([
+      timed(store.listPublished(ctx.state.locale, undefined, 12)),
+      getCms().list(ctx.state.locale),
+    ]);
+    const [une, ...rest] = items;
+    const others = [...rest, ...cms.entries.map((e) => e.post)].sort((a, b) => b.publishedAt - a.publishedAt);
+    return page({ une, others, cursor, kvMs, cms, now: Date.now() });
   },
 });
 
@@ -37,17 +54,18 @@ function bold(line: string, mark: boolean) {
 export default define.page<typeof handler>(function Home({ data, state, url }) {
   const { locale } = state;
   const d = t(locale);
-  const [une, ...others] = data.items;
+  const { une, others } = data;
   const rail = others.slice(0, 2);
+  const x = d.xray;
   const [grand, ...rest] = others.slice(2);
   const demo = d.home.demo;
   const prefix = ["## ", "", "- ", "- ", "> "];
   return (
-    <>
+    <Rx.Provider value={Boolean(state.xray)}>
       <Seo locale={locale} url={url} title={d.siteTitle} description={d.siteDescription} image={une?.cover} />
       <main id="contenu">
         <section class="vitrine">
-          <article class={une ? "une" : "une une-vide"}>
+          <article {...vise(Boolean(state.xray), "md", une ? "une" : "une une-vide")}>
             {une?.cover && (
               <img
                 class="photo"
@@ -60,6 +78,8 @@ export default define.page<typeof handler>(function Home({ data, state, url }) {
               />
             )}
             <Masthead locale={locale} path={url.pathname} />
+            <XrayRow locale={locale} where="components/ui.tsx › Masthead" />
+            {une && <SourceTag post={une} at="flux une" une />}
             {une
               ? (
                 <a class="une-lien" href={href(locale, `/articles/${une.slug}`)}>
@@ -77,10 +97,14 @@ export default define.page<typeof handler>(function Home({ data, state, url }) {
                 </a>
               )
               : <h1>{d.home.empty}</h1>}
+            {une && <PhotoTag post={une} at="bas" />}
           </article>
 
           <aside class="presentoir" aria-labelledby="nouv">
-            <h2 id="nouv">{d.home.news}</h2>
+            <h2 id="nouv">
+              {d.home.news}
+              <Tag o="code" where={x.news} at="fin" />
+            </h2>
             {[0, 1].map((i) => {
               const p = rail[i];
               if (!p) {
@@ -106,7 +130,8 @@ export default define.page<typeof handler>(function Home({ data, state, url }) {
                     )
                     : <span class="vide" />}
                   <div>
-                    {p.topics[0] && <p class="spec sur">{topicLabel(locale, p.topics[0])}</p>}
+                    <SourceTag post={p} at="flux" />
+                    {kicker(p, locale) && <p class="spec sur">{kicker(p, locale)}</p>}
                     <Title text={p.title} as="h3" />
                     <p class="spec">{d.post.minutes(p.minutes)} · {fmtDate(locale, p.publishedAt)}</p>
                   </div>
@@ -123,6 +148,7 @@ export default define.page<typeof handler>(function Home({ data, state, url }) {
                 height="1152"
                 decoding="async"
               />
+              <Tag o="code" where="components/ui.tsx › TryForm" note={x.tryForm} />
               <div class="essai-corps">
                 <h3>{d.home.tryTitle}</h3>
                 <p>{d.home.tryBody}</p>
@@ -135,6 +161,12 @@ export default define.page<typeof handler>(function Home({ data, state, url }) {
 
         <section class="atelier">
           <div class="atelier-texte revele">
+            <Tag
+              o="code"
+              where={`pages/Home.tsx › atelier · i18n/${locale}.ts › home.editorTitle`}
+              note={x.atelier}
+              at="flux"
+            />
             <p class="sur">{d.home.editorKicker}</p>
             <Title text={d.home.editorTitle} as="h2" />
             <p>{d.home.editorBody}</p>
@@ -181,6 +213,7 @@ export default define.page<typeof handler>(function Home({ data, state, url }) {
 
         <section class="a-lire" aria-labelledby="som">
           <div class="sommaire-tete">
+            <Tag o="code" where={`i18n/${locale}.ts › topics · pages/Home.tsx`} note={x.topics} at="dessus" />
             <h2 id="som">{d.home.next}</h2>
             <nav class="themes" aria-label={d.nav.topics}>
               {Object.entries(d.topics).map(([slug, label]) => (
@@ -197,6 +230,18 @@ export default define.page<typeof handler>(function Home({ data, state, url }) {
             )
             : <p class="vide-liste">{d.home.empty}</p>}
           {rest.slice(2).map((p) => <PostRow key={p.id} post={p} locale={locale} />)}
+          <Readout
+            title={x.homeTitle}
+            intro={x.homeIntro}
+            rows={[
+              { dt: x.dt.route, dd: x.homeRoute(url.pathname) },
+              { o: "md", dt: "Markdown", dd: x.homeKv(locale, Math.round(data.kvMs)) },
+              { o: "cms", dt: "Payload", dd: cmsRead(locale, getCms().base, data.cms, data.now) },
+              { dt: x.dt.order, dd: x.homeOrder },
+              { o: "code", dt: "Code", dd: x.homeCode },
+              { dt: x.dt.browser, dd: x.browser },
+            ]}
+          />
           <p class="suite">
             <a
               class="pill pill-ligne"
@@ -208,8 +253,8 @@ export default define.page<typeof handler>(function Home({ data, state, url }) {
         </section>
       </main>
       <Footer locale={locale} />
-      <TryBar locale={locale} postId={une?.id} />
+      <TryBar locale={locale} path={url.pathname} postId={une?.id} />
       <Toast toast={state.toast} />
-    </>
+    </Rx.Provider>
   );
 });

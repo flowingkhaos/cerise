@@ -5,6 +5,7 @@ import type { Locale, PostSummary, Toast as ToastT } from "../lib/types.ts";
 import { fmtDate, href, swapLocale, t, topicLabel } from "../lib/i18n.ts";
 import { plainTitle, titleHtml } from "../lib/markdown.ts";
 import { VISITOR } from "../lib/auth.ts";
+import { Legend, Rx, SourceTag, Switch, Tag, useRx, vise, XrayRow } from "./xray.tsx";
 
 export function Seo(
   { locale, url, title, description, image, alternate = true }: {
@@ -83,6 +84,7 @@ export function Masthead(
             </svg>
           </button>
         </form>
+        <Switch locale={locale} path={path} />
       </nav>
     </header>
   );
@@ -118,17 +120,21 @@ export function VisitorIds({ locale }: { locale: Locale }) {
   );
 }
 
-/** Phones only: the editor one tap away, pinned to the bottom of the screen. */
-export function TryBar({ locale, postId }: { locale: Locale; postId?: string }) {
+/** Phones only, pinned to the bottom of the screen on every public page: the X-ray switch (the header has no
+ * room for it there) and the editor one tap away. The visitor login is printed on the sign-in page. */
+export function TryBar({ locale, path, postId }: { locale: Locale; path: string; postId?: string }) {
   return (
     <div class="barre-essai">
+      <Legend locale={locale} />
+      <Switch locale={locale} path={path} />
       <TryForm locale={locale} postId={postId} label={t(locale).home.tryBar} />
-      <span class="ids">
-        <b>{VISITOR.username}</b> / <b>{VISITOR.password}</b>
-      </span>
     </div>
   );
 }
+
+/** The small line above a title: a cerise topic, or a Payload article's free-text category. */
+export const kicker = (post: PostSummary, locale: Locale) =>
+  post.cms ? post.cms.category : post.topics[0] && topicLabel(locale, post.topics[0]);
 
 /** A post's photo carries its view-transition name, so it travels into the article's cover. */
 export const coverName = (slug: string) => `view-transition-name: p-${slug}`;
@@ -136,9 +142,12 @@ export const coverName = (slug: string) => `view-transition-name: p-${slug}`;
 /** A magazine card (home, end of an article). `big` spans the row, photo beside the text. */
 export function Card({ post, locale, big = false }: { post: PostSummary; locale: Locale; big?: boolean }) {
   const d = t(locale);
+  const k = kicker(post, locale);
+  const frame = vise(useRx(), post.cms ? "cms" : "md", "carte-photo");
   return (
     <a class={`carte revele${big ? " carte-grand" : ""}`} href={href(locale, `/articles/${post.slug}`)}>
-      <div class="carte-photo">
+      <div {...frame}>
+        <SourceTag post={post} />
         {post.cover && (
           <img
             src={post.cover}
@@ -152,7 +161,7 @@ export function Card({ post, locale, big = false }: { post: PostSummary; locale:
         )}
       </div>
       <div class="carte-texte">
-        {post.topics[0] && <p class="sur">{topicLabel(locale, post.topics[0])}</p>}
+        {k && <p class="sur">{k}</p>}
         <Title text={post.title} as="h3" />
         {post.excerpt && <p class="extrait">{post.excerpt}</p>}
         <p class="spec">{fmtDate(locale, post.publishedAt)} · {d.post.minutes(post.minutes)}</p>
@@ -165,6 +174,7 @@ export function Footer({ locale }: { locale: Locale }) {
   const d = t(locale);
   return (
     <footer class="pied">
+      <Tag o="code" where={`components/ui.tsx › Footer · i18n/${locale}.ts › footer`} />
       <div class="pied-haut">
         <a class="marque" href={href(locale, "/")}>
           cerise<span>.</span>
@@ -198,13 +208,14 @@ export function PostRow({ post, locale }: { post: PostSummary; locale: Locale })
   const d = t(locale);
   return (
     <a class="ligne" href={href(locale, `/articles/${post.slug}`)}>
-      <div class="no">{String(post.number).padStart(2, "0")}</div>
+      <div class="no">{post.cms ? "—" : String(post.number).padStart(2, "0")}</div>
       <div>
+        <SourceTag post={post} at="flux" />
         <Title text={post.title} as="h3" />
         {post.excerpt && <p>{post.excerpt}</p>}
         <p class="spec">
           {fmtDate(locale, post.publishedAt)} · {d.post.minutes(post.minutes)}
-          {post.topics[0] ? ` · ${topicLabel(locale, post.topics[0])}` : ""}
+          {kicker(post, locale) ? ` · ${kicker(post, locale)}` : ""}
         </p>
       </div>
       {post.cover ? <img src={post.cover} alt="" loading="lazy" decoding="async" width="320" height="400" /> : <span />}
@@ -213,23 +224,29 @@ export function PostRow({ post, locale }: { post: PostSummary; locale: Locale })
 }
 
 export function PageShell(
-  { locale, path, current, toast, children }: {
+  { locale, path, current, toast, tryPost, xray = false, children }: {
     locale: Locale;
     path: string;
     current?: "articles" | "topics";
     toast?: ToastT;
+    /** state.xray: the page's X-ray layer (components/xray.tsx). */
+    xray?: boolean;
+    /** The post the try bar opens in the editor (a Deno KV post); none opens the admin. */
+    tryPost?: string;
     children: ComponentChildren;
   },
 ) {
   return (
-    <>
+    <Rx.Provider value={xray}>
       <div class="bande">
         <Masthead locale={locale} path={path} current={current} />
+        <XrayRow locale={locale} where="components/ui.tsx › PageShell, Masthead" />
       </div>
       <main id="contenu">{children}</main>
       <Footer locale={locale} />
+      <TryBar locale={locale} path={path} postId={tryPost} />
       <Toast toast={toast} />
-    </>
+    </Rx.Provider>
   );
 }
 

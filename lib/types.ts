@@ -30,6 +30,16 @@ export interface PostSummary {
   updatedAt: number;
   words: number;
   minutes: number;
+  /** Only on an article from the shared Payload CMS (lib/cms.ts); a Deno KV post never has it. */
+  cms?: CmsRef;
+}
+
+/** Where a Payload article lives in the CMS, for the X-ray and the edit link. */
+export interface CmsRef {
+  id: number;
+  category: string;
+  /** The hero's media row, when the page shows it. */
+  media: { id: number; file: string; credit: string } | null;
 }
 
 /** A post's metadata row. Bodies live in chunks beside it. */
@@ -71,4 +81,6 @@ export interface State {
   toast?: Toast;
   /** The visitor's light/dark pick (cookie); unset follows the system. */
   theme?: "light" | "dark";
+  /** The X-ray layer (cookie, routes/rayons-x.ts): tags every piece of a public page with its source. */
+  xray?: boolean;
 }

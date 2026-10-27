@@ -1,0 +1,416 @@
+/* Rayons X — a reading layer over the public pages (components/xray.tsx). Only the switch renders while it is
+   off; on, every owned piece carries a tag (owner + where it lives), owned photos get viewfinder corners, and a
+   readout lists what the page never shows. Owners: Markdown (a file in the repo, then Deno KV) · Payload (the
+   shared CMS) · Code (the site itself). Approved on the canvas 2026-10-27. */
+
+:root {
+  --xr-md: #f6e27a; /* butter: the original posts */
+  --xr-cms: light-dark(#3a52b4, #8fa6f5); /* deep sky: the shared CMS */
+  --xr-code: var(--texte); /* ink: the site's own code */
+}
+[data-o="md"] {
+  --xc: var(--xr-md);
+}
+[data-o="cms"] {
+  --xc: var(--xr-cms);
+}
+[data-o="code"] {
+  --xc: var(--xr-code);
+}
+
+/* ---------- the switch: a form button in the masthead (desktop) and the try bar (phones) ---------- */
+.rx-form {
+  display: contents;
+}
+.rx {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.5rem;
+  padding: 0 0.3rem 0 0.95rem;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: rgb(255 255 255 / 0.16);
+  color: inherit;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.3s var(--ease-out);
+}
+.rx:hover {
+  background: rgb(255 255 255 / 0.3);
+}
+.rx:focus-visible {
+  outline: 3px solid var(--beurre);
+  outline-offset: 3px;
+}
+/* the state reads like the « Nouveau » badge: butter and a beating dot when lit */
+.rx-etat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.5em 0.75em;
+  border-radius: var(--r-pill);
+  background: rgb(28 16 19 / 0.32);
+  color: var(--papier);
+  font: 600 var(--t-spec)/1 var(--f-text);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.rx-etat::before {
+  content: "";
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+}
+.rx-on .rx-etat {
+  background: var(--beurre);
+  color: var(--rouge-nuit);
+}
+.rx-on .rx-etat::before {
+  background: var(--rouge);
+  opacity: 1;
+  animation: pouls 2.4s ease-in-out infinite;
+}
+
+/* ---------- the legend: what this page is made of, counted ---------- */
+.rx-rang {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-3) var(--s-5);
+}
+.une > .rx-rang {
+  position: relative;
+  z-index: 2;
+  margin-bottom: auto; /* the vitrine spreads its children; this row stays under the masthead */
+}
+.bande > .rx-rang {
+  margin-top: var(--s-4);
+}
+.rx-legende {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.1rem;
+  width: fit-content;
+  padding: 0.7rem 0.95rem;
+  background: var(--fond);
+  color: var(--texte);
+  font: 600 var(--t-spec)/1.2 var(--f-text);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 10px 28px rgb(28 16 19 / 0.24);
+}
+.rx-legende > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.rx-legende > span[data-o]::before {
+  content: "";
+  width: 0.9em;
+  height: 0.9em;
+  background: var(--xc);
+  box-shadow: inset 0 0 0 1px rgb(28 16 19 / 0.5);
+}
+.rx-legende b {
+  font-weight: 700;
+}
+.rx-legende .rx-total {
+  color: var(--texte-pale);
+}
+
+/* ---------- the tag: owner, where it lives, one line of how ---------- */
+.rx-tag {
+  display: flex;
+  position: absolute;
+  z-index: 6;
+  top: 0.75rem;
+  left: 0.75rem;
+  max-width: min(25rem, calc(100% - 1.5rem));
+  align-items: flex-start;
+  gap: 0.6em;
+  padding: 0.5em 0.8em 0.55em 0.6em;
+  background: var(--fond);
+  color: var(--texte);
+  text-align: left;
+  font: 500 0.8125rem/1.35 var(--f-text);
+  letter-spacing: 0;
+  text-transform: none;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 8px 22px rgb(28 16 19 / 0.22);
+  pointer-events: none;
+}
+.rx-tag::before {
+  content: "";
+  flex: none;
+  width: 0.95em;
+  height: 0.95em;
+  margin-top: 0.12em;
+  background: var(--xc);
+  box-shadow: inset 0 0 0 1px rgb(28 16 19 / 0.5);
+}
+.rx-tag > span {
+  display: grid;
+  gap: 0.1em;
+  min-width: 0;
+}
+.rx-tag b {
+  font-weight: 700;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.rx-tag i {
+  font-style: normal;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.rx-tag small {
+  font-size: 0.75rem;
+  color: var(--texte-doux);
+}
+/* in the flow: on its own line, above what it names */
+.rx-tag--flux {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: var(--s-3);
+  box-shadow: inset 0 0 0 1px var(--filet);
+}
+.une .rx-tag--flux,
+.presentoir .rx-tag--flux,
+.rx-rang .rx-tag--flux {
+  box-shadow: 0 8px 22px rgb(28 16 19 / 0.22);
+}
+.rx-rang .rx-tag--flux {
+  margin-bottom: 0;
+}
+.rx-tag--une {
+  margin-bottom: -1.25rem;
+}
+/* sitting on the line above its block */
+.rx-tag--dessus {
+  top: auto;
+  bottom: calc(100% + 0.5rem);
+  left: 0;
+}
+/* on the right end of a heading */
+.rx-tag--fin {
+  top: 50%;
+  left: auto;
+  right: 0;
+  translate: 0 -50%;
+}
+/* low in the corner of a photo */
+.rx-tag--bas {
+  top: auto;
+  bottom: 0.75rem;
+  left: auto;
+  right: 0.75rem;
+}
+.pied > .rx-tag {
+  top: 1.25rem;
+  left: clamp(1.25rem, 4vw, 3rem);
+}
+.article-pied > .rx-tag {
+  top: 0.5rem;
+  left: auto;
+  right: clamp(1.25rem, 4vw, 3rem);
+}
+.rx-on :is(.barre, .presentoir h2, .essai, .atelier-texte, .pied, .sommaire-tete, .article-pied) {
+  position: relative;
+}
+.corps-cadre {
+  position: relative;
+  min-width: 0;
+}
+
+/* ---------- the viewfinder: four corners on an owned photo ---------- */
+.rx-vise {
+  position: relative;
+}
+.rx-vise::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  inset: 0.55rem;
+  pointer-events: none;
+  --rk: 1.5rem;
+  --rw: 2px;
+  background:
+    linear-gradient(var(--xc) 0 0) left top / var(--rk) var(--rw) no-repeat,
+    linear-gradient(var(--xc) 0 0) left top / var(--rw) var(--rk) no-repeat,
+    linear-gradient(var(--xc) 0 0) right top / var(--rk) var(--rw) no-repeat,
+    linear-gradient(var(--xc) 0 0) right top / var(--rw) var(--rk) no-repeat,
+    linear-gradient(var(--xc) 0 0) left bottom / var(--rk) var(--rw) no-repeat,
+    linear-gradient(var(--xc) 0 0) left bottom / var(--rw) var(--rk) no-repeat,
+    linear-gradient(var(--xc) 0 0) right bottom / var(--rk) var(--rw) no-repeat,
+    linear-gradient(var(--xc) 0 0) right bottom / var(--rw) var(--rk) no-repeat;
+  filter: drop-shadow(0 0 1px rgb(28 16 19 / 0.75));
+}
+.une.rx-vise::after {
+  inset: 0.9rem;
+  --rk: 2.25rem;
+}
+
+/* ---------- the readout: what the page never shows ---------- */
+.rx-releve {
+  margin-top: var(--s-7);
+  background: var(--carte-2);
+  color: var(--texte);
+}
+.rx-releve::before {
+  content: "";
+  display: block;
+  height: 6px;
+  background: var(--texte);
+}
+.rx-releve-corps {
+  padding: var(--s-5) var(--s-6) var(--s-6);
+}
+.rx-releve h2 {
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.rx-releve h2 em.accent {
+  color: var(--rouge-texte);
+}
+.rx-releve-corps > p {
+  margin-top: var(--s-2);
+  max-width: 70ch;
+  font-size: var(--t-small);
+  line-height: 1.5;
+  color: var(--texte-doux);
+}
+.rx-releve dl {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  margin-top: var(--s-5);
+  border-top: 1px solid var(--filet);
+}
+.rx-releve dt,
+.rx-releve dd {
+  margin: 0;
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--filet);
+}
+.rx-releve dt {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55em;
+  font: 700 var(--t-spec)/1.9 var(--f-text);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.rx-releve dt[data-o]::before {
+  content: "";
+  flex: none;
+  width: 0.9em;
+  height: 0.9em;
+  translate: 0 0.1em;
+  background: var(--xc);
+  box-shadow: inset 0 0 0 1px rgb(28 16 19 / 0.5);
+}
+.rx-releve dd {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.rx-releve dd i {
+  font-style: normal;
+  font-weight: 600;
+}
+/* between the article and what comes after it, on the page's column */
+.rx-releve--page {
+  width: min(calc(100% - 2 * clamp(1.25rem, 4vw, 3rem)), 74rem);
+  margin: 0 auto var(--s-8);
+}
+
+/* a Payload article's end: cerise's editor, and the CMS where it is written */
+.essai-ici-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+/* ---------- phones: the switch and the legend live in the try bar, pinned to the bottom ---------- */
+@media (max-width: 960px) {
+  .barre .rx-form,
+  .rx-rang .rx-legende {
+    display: none;
+  }
+  .rx-rang {
+    justify-content: flex-start;
+  }
+  .barre-essai {
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .barre-essai .rx-legende {
+    flex-basis: 100%;
+    order: -1;
+    padding: 0 0 var(--s-1);
+    background: none;
+    box-shadow: none;
+    gap: 0.4rem 0.9rem;
+  }
+  .barre-essai .rx {
+    min-height: 2.75rem;
+    padding: 0 0.3rem 0 0.85rem;
+    background: var(--carte-2);
+    color: var(--texte);
+    font-size: 0.9375rem;
+  }
+  .barre-essai .rx-etat {
+    padding: 0.55em;
+    background: rgb(28 16 19 / 0.14);
+    color: var(--texte);
+  }
+  /* the dot alone: the bar has no room for the word (aria-pressed still says it) */
+  .barre-essai .rx-mot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .barre-essai .pill {
+    padding: 0 var(--s-4) 0 var(--s-5);
+  }
+  /* the bar grows a row with the legend: the footer keeps clear of it */
+  .rx-on body:has(.barre-essai) .pied {
+    padding-bottom: 9rem;
+  }
+  .une > .rx-tag--bas {
+    position: relative;
+    inset: auto;
+    max-width: 100%;
+    margin-top: -1.25rem;
+  }
+  .rx-releve dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rx-releve dt {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+  .rx-releve-corps {
+    padding: var(--s-5);
+  }
+  .rx-tag {
+    font-size: 0.75rem;
+  }
+}

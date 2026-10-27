@@ -6,6 +6,7 @@ import { href, t } from "../lib/i18n.ts";
 import { checkCredentials, loginLimiter, readSid, safeNext, sessionCookie, VISITOR } from "../lib/auth.ts";
 import { clientIp } from "../lib/guard.ts";
 import { Masthead, Seo, Toast } from "../components/ui.tsx";
+import { Rx } from "../components/xray.tsx";
 
 const DAY = 24 * 60 * 60;
 
@@ -47,7 +48,7 @@ export default define.page<typeof handler>(function Login({ data, state, url }) 
   const { locale } = state;
   const d = t(locale).login;
   return (
-    <>
+    <Rx.Provider value={Boolean(state.xray)}>
       <Seo locale={locale} url={url} title={`${d.title} — cerise`} description={d.lede} />
       <main id="contenu" class="connexion">
         <div class="connexion-photo">
@@ -84,6 +85,6 @@ export default define.page<typeof handler>(function Login({ data, state, url }) 
         </div>
       </main>
       <Toast toast={state.toast} />
-    </>
+    </Rx.Provider>
   );
 });

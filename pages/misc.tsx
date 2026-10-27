@@ -1,6 +1,7 @@
 // Sign-out, RSS, health, and the 404 and error pages.
 import { define } from "../utils.ts";
 import { getStore } from "../lib/store.ts";
+import { getCms } from "../lib/cms.ts";
 import { href, localeOf, t } from "../lib/i18n.ts";
 import { readSid, sessionCookie } from "../lib/auth.ts";
 import { plainTitle } from "../lib/markdown.ts";
@@ -23,7 +24,12 @@ export const rssHandler = define.handlers({
   async GET(ctx) {
     const { locale } = ctx.state;
     const d = t(locale);
-    const { items } = await (await getStore()).listPublished(locale, undefined, 20);
+    const [kv, cms] = await Promise.all([
+      (await getStore()).listPublished(locale, undefined, 20),
+      getCms().list(locale),
+    ]);
+    const items = [...kv.items, ...cms.entries.map((e) => e.post)]
+      .sort((a, b) => b.publishedAt - a.publishedAt).slice(0, 20);
     const base = ctx.url.origin;
     const entries = items.map((p) => {
       const link = `${base}${href(locale, `/articles/${p.slug}`)}`;
@@ -62,7 +68,7 @@ export const NotFound = define.page(function NotFound({ url, state }) {
   const locale = localeOf(url.pathname);
   const d = t(locale).notFound;
   return (
-    <PageShell locale={locale} path={url.pathname} toast={state.toast}>
+    <PageShell locale={locale} path={url.pathname} xray={state.xray} toast={state.toast}>
       <Seo locale={locale} url={url} title={`${d.title} ${d.accent} — cerise`} description={d.body} alternate={false} />
       <section class="perdu">
         <div class="perdu-photo">
