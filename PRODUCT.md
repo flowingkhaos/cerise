@@ -42,11 +42,17 @@ writes plain markdown the owner can export at any time.
 
 ## Capabilities and Constraints
 
-- Public pages: home (newest posts), article, topic page, RSS, login.
+- Public pages: home (newest posts), article, topic page, RSS, login. Every public page carries the **Rayons X** switch
+  (operator, 2026-10-27): on, each piece of the page names its source — a markdown file in the repo copied into Deno KV,
+  the shared Payload CMS, or the site's code. On phones the switch sits in the try bar, pinned to the bottom of the
+  screen; the visitor login is printed on the sign-in page only.
+- Two sources (operator, 2026-10-27): cerise's own posts (Deno KV) and the `articles` of the shared showcase CMS
+  (Payload, domain `blog-demo`), merged by date. The home page's lead is always a KV post.
 - Admin: entry list, editor with a publication form (title, slug, excerpt, topics, cover, status), export of every post,
   restore of the seed posts.
 - Markdown plus **named components** (`Callout`, `Figure`) from a fixed list; no other HTML, no scripts in content.
-- No AI anywhere. No analytics or trackers. No outbound calls. Images self-hosted.
+- No AI anywhere. No analytics or trackers. One outbound call: the read of the showcase CMS (lib/cms.ts, allow-listed
+  hosts). Images self-hosted, except the CMS articles' covers, served by the CMS.
 - No image uploads in v1: covers and inline images come from the site's own image set.
 - No tables in the editor in v1.
 - The repo is public: every self-hosted font must allow redistribution (SIL OFL preferred). A face whose licence forbids

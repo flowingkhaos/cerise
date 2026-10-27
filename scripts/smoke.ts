@@ -20,6 +20,8 @@ const PUBLIC = [
   "/themes/ecrire",
   "/articles/ecrivez-comme-vous-parlez",
   "/en/articles/ecrivez-comme-vous-parlez",
+  "/articles/d-ou-viennent-ces-articles", // from the shared Payload CMS (or its fixture)
+  "/en/articles/d-ou-viennent-ces-articles",
   "/connexion",
   "/rss.xml",
   "/healthz",
@@ -86,6 +88,68 @@ for (const p of PUBLIC) {
   );
   const dark = await (await get("/", { headers: { cookie: pick } })).text();
   ok("the server renders the pick", dark.includes('data-theme="dark"'));
+}
+
+// 2c. the shared CMS: its articles beside the KV posts, the lead stays a KV post, a twin with another slug
+{
+  const home = await (await get("/")).text();
+  const lead = home.slice(home.indexOf('class="une'), home.indexOf('class="presentoir"'));
+  ok("home lists the CMS articles", home.includes('href="/articles/d-ou-viennent-ces-articles"'));
+  ok("the lead is a KV post", lead.includes('href="/articles/ecrivez-comme-vous-parlez"'));
+  const r = await get("/articles/d-ou-viennent-ces-articles");
+  const html = await r.text();
+  ok("CMS article renders its markdown", html.includes("<code>blog-demo</code>"));
+  ok("CMS article never opens cerise's editor on itself", !/name="next" value="\/admin\/posts\//.test(html));
+  ok("CMS article reports how it was read", /cms;desc="(live|cache|spare)"/.test(r.headers.get("server-timing") ?? ""));
+  const twin = await get("/en/articles/un-seul-endroit-pour-vos-contenus");
+  await twin.body?.cancel();
+  ok(
+    "a CMS twin with another slug redirects to it",
+    twin.status === 302 && twin.headers.get("location") === "/en/articles/one-place-for-all-your-content",
+    `${twin.status} ${twin.headers.get("location")}`,
+  );
+}
+
+// 2d. Rayons X: off by default; a form sets a cookie; on, every tag is counted in the legend and the page
+// is never shared from a cache
+{
+  const off = await (await get("/")).text();
+  ok("X-ray off: the switch, no tags", off.includes('action="/rayons-x"') && !off.includes("rx-tag"));
+  const s = await get("/rayons-x", { method: "POST", headers: sameOrigin, body: form({ rx: "1", back: "/articles" }) });
+  await s.body?.cancel();
+  const cookie = (s.headers.get("set-cookie") ?? "").split(";")[0];
+  ok(
+    "X-ray switch → 303 back + cookie",
+    s.status === 303 && s.headers.get("location") === "/articles" && cookie === "cerise_rx=1",
+    `${s.status} ${s.headers.get("location")} ${cookie}`,
+  );
+  const pages = [
+    "/",
+    "/en",
+    "/articles",
+    "/articles/ecrivez-comme-vous-parlez",
+    "/articles/d-ou-viennent-ces-articles",
+  ];
+  for (const p of pages) {
+    const r = await get(p, { headers: { cookie } });
+    const html = await r.text();
+    const n: Record<string, number> = { md: 0, cms: 0, code: 0 };
+    for (const m of html.matchAll(/class="rx-tag[^"]*" data-o="(md|cms|code)"/g)) n[m[1]]++;
+    const legend = html.match(/<p class="rx-legende">.*?<\/p>/s)?.[0] ?? "";
+    const shown = [...legend.matchAll(/<b>(\d+)<\/b>/g)].map((m) => Number(m[1]));
+    const want = [n.md, n.cms, n.code, n.md + n.cms + n.code];
+    ok(`X-ray ${p}: legend = tags`, JSON.stringify(shown) === JSON.stringify(want), `${shown} vs ${want}`);
+    ok(`X-ray ${p}: never cached`, (r.headers.get("cache-control") ?? "").includes("no-store"));
+    ok(`X-ray ${p}: no script`, !/<script\b/i.test(html));
+  }
+  const home = await (await get("/", { headers: { cookie } })).text();
+  ok("X-ray home tags both sources", /data-o="md"/.test(home) && /class="rx-tag[^"]*" data-o="cms"/.test(home));
+  ok("X-ray home has the readout", home.includes('class="rx-releve"'));
+  const art = await (await get("/articles/d-ou-viennent-ces-articles", { headers: { cookie } })).text();
+  ok("X-ray CMS article names its collection", art.includes("articles › d-ou-viennent-ces-articles"));
+  const o = await get("/rayons-x", { method: "POST", headers: sameOrigin, body: form({ rx: "0", back: "/" }) });
+  await o.body?.cancel();
+  ok("X-ray off clears the cookie", (o.headers.get("set-cookie") ?? "").includes("Max-Age=0"));
 }
 
 // 3. guard: cross-site and size refusals
