@@ -32,12 +32,18 @@ app.use(async (ctx) => {
   const maxBody = BIG_BODY.test(ctx.url.pathname) ? 262_144 : 65_536;
   const no = await guard(ctx.req, ip, { limiter, maxBody });
   const res = harden(no ?? await ctx.next());
-  res.headers.set("content-security-policy", res.headers.get("content-security-policy") + csp());
+  let policy = res.headers.get("content-security-policy") + csp();
+  // Live preview (README): /preview alone may sit in a frame, and only in the CMS admin's.
+  const base = getCms().base;
+  if (ctx.url.pathname === "/preview" && base) {
+    policy = policy.replace("frame-ancestors 'none'", `frame-ancestors ${new URL(base).origin}`);
+  }
+  res.headers.set("content-security-policy", policy);
   return res;
 });
 
 // Caching per route class (architecture § Rendering and caching). Gated routes never cache.
-const PRIVATE = /^\/(en\/?)?(admin|connexion|deconnexion)(\/|$)/;
+const PRIVATE = /^\/(en\/?)?(admin|connexion|deconnexion|preview)(\/|$)/;
 const LONG_CACHE = /^\/(fonts|assets|_fresh)\//;
 const COMPRESSIBLE = /^(text\/|application\/(javascript|json|xml|rss\+xml)|image\/svg)/;
 

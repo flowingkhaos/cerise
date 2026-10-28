@@ -67,6 +67,21 @@ Then refresh the fixtures from the CMS you deploy against:
 for l in fr en; do curl -sgf "https://showcase-cms-1065657380974.us-east5.run.app/api/articles?where[domain.slug][equals]=blog-demo&where[locale][equals]=$l&sort=-publishedAt&depth=1" | python3 -m json.tool --indent 1 > content/cms-articles-$l.json; done
 ```
 
+### Live preview
+
+The showcase CMS admin shows a draft of a cerise article beside its form while the author types (autosave every 3 s).
+Contract: the CMS README § Live preview.
+
+- **The link.** The admin opens `/preview?collection=articles&id=<id>&exp=<unix s>&sig=<hex>` in its iframe. It builds
+  the link from the `url` of the `blog-demo` domain row; the third argument of `scripts/cms-articles.py` writes it
+  (`https://cerise.flowingkhaos.deno.net` in production).
+- **The read.** `pages/Preview.tsx` passes the four values to `GET ${CMS_URL}/api/preview` (`lib/cms.ts` `readPreview`);
+  the CMS checks the signature and answers the latest draft. cerise holds no secret and caches nothing. Only `blog-demo`
+  articles render; 403 = the link expired (1–2 h): reopen the preview in the admin.
+- **The frame.** `/preview` alone may be framed, by the CMS origin only (`frame-ancestors`, `main.ts`), and is
+  `private, no-store`. It renders with the article page's own view, X-ray off, and one inline script — the only script
+  outside the admin: it tells the admin the page is ready, then reloads on each save.
+
 ## Check, test, ship
 
 ```sh

@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { type CmsDoc, cmsUrlAllowed, createCms, FIXTURES, toEntry } from "./cms.ts";
+import { type CmsDoc, cmsUrlAllowed, createCms, FIXTURES, readPreview, toEntry } from "./cms.ts";
 
 const BASE = "http://localhost:4620";
 const doc = (id: number, slug: string, extra: Partial<CmsDoc> = {}): CmsDoc => ({
@@ -107,4 +107,36 @@ Deno.test("no CMS_URL: the fixtures answer, saved from a real answer of the CMS"
   assertEquals(fr.from, "spare");
   assertEquals(fr.entries.map((e) => e.post.slug).includes("d-ou-viennent-ces-articles"), true);
   assertEquals(fr.entries.every((e) => e.post.cms && e.html.length > 0), true);
+});
+
+Deno.test("readPreview passes the four signed values to the CMS and answers only our articles", async () => {
+  const seen: string[] = [];
+  const params = new URLSearchParams({ collection: "articles", id: "3", exp: "1793140000", sig: "ab12", extra: "x" });
+  const ours = { ...doc(3, "a"), domain: { slug: "blog-demo" } };
+  const ok = await readPreview(BASE, params, (u) => {
+    seen.push(String(u));
+    return Promise.resolve(new Response(JSON.stringify(ours), { status: 200 }));
+  });
+  assertEquals(ok.status, 200);
+  assertEquals(ok.doc?.slug, "a");
+  assertEquals(seen, [`${BASE}/api/preview?collection=articles&id=3&exp=1793140000&sig=ab12`]);
+
+  const theirs = await readPreview(
+    BASE,
+    params,
+    () => Promise.resolve(new Response(JSON.stringify({ ...ours, domain: { slug: "store" } }), { status: 200 })),
+  );
+  assertEquals(theirs, { status: 404 });
+});
+
+Deno.test("readPreview: no CMS or not an article is 404; 403 and 404 pass through; anything else is 503", async () => {
+  const p = (collection: string) => new URLSearchParams({ collection, id: "1", exp: "1", sig: "0" });
+  const never = () => Promise.reject(new Error("no call expected"));
+  assertEquals(await readPreview(undefined, p("articles"), never), { status: 404 });
+  assertEquals(await readPreview(BASE, p("pages"), never), { status: 404 });
+  for (const [code, want] of [[403, 403], [404, 404], [500, 503]]) {
+    const r = await readPreview(BASE, p("articles"), () => Promise.resolve(new Response("no", { status: code })));
+    assertEquals(r, { status: want });
+  }
+  assertEquals(await readPreview(BASE, p("articles"), () => Promise.reject(new Error("down"))), { status: 503 });
 });

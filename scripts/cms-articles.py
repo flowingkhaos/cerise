@@ -2,13 +2,14 @@
 # the media library once per language (its alt text is per language), each article is created when missing and
 # updated otherwise, published, the English one linked to the French one. Sources: scripts/cms-articles/.
 # Never prints the key.
-# usage: python3 -I scripts/cms-articles.py <env file with SHOWCASE_CMS_API_KEY> <CMS base URL>
+# usage: python3 -I scripts/cms-articles.py <env file with SHOWCASE_CMS_API_KEY> <CMS base URL> [<site URL>]
+# A site URL is written to the blog-demo domain row: the CMS builds its live preview links from it.
 #   local: python3 -I scripts/cms-articles.py ~/.config/kos/showcase-cms.local.env http://localhost:4620
 #   prod:  python3 -I scripts/cms-articles.py ~/.config/kos/showcase-cms.prod-admin.env https://showcase-cms-1065657380974.us-east5.run.app
 import json, os, re, sys, uuid, urllib.parse, urllib.request
 
-if len(sys.argv) != 3:
-    sys.exit("usage: python3 -I scripts/cms-articles.py <env file> <CMS base URL>  (see the header of this file)")
+if len(sys.argv) not in (3, 4):
+    sys.exit("usage: python3 -I scripts/cms-articles.py <env file> <CMS base URL> [<site URL>]  (see this file's header)")
 env = open(os.path.expanduser(sys.argv[1])).read()
 KEY = re.search(r"^SHOWCASE_CMS_API_KEY=['\"]?([^'\"\n]+)", env, re.M).group(1)
 B = sys.argv[2].rstrip("/")
@@ -56,6 +57,8 @@ def media(current, filename, cover, alt, credit):
 
 
 domain = first("/api/domains", {"slug": DOMAIN})["id"]
+if len(sys.argv) == 4:
+    print("domain", DOMAIN, "url =", call("PATCH", f"/api/domains/{domain}", {"url": sys.argv[3].rstrip("/")})["url"])
 ids = {}
 for locale in ("fr", "en"):  # French first: the English twin links to it
     for name in sorted(os.listdir(os.path.join(SRC, locale))):

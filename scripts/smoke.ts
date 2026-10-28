@@ -152,6 +152,20 @@ for (const p of PUBLIC) {
   ok("X-ray off clears the cookie", (o.headers.get("set-cookie") ?? "").includes("Max-Age=0"));
 }
 
+// 2c. live preview: a link the CMS did not sign is refused (403; 404 from a CMS without /api/preview),
+// never cached, and only /preview may be framed — by the CMS origin, never by anyone else.
+{
+  const r = await get("/preview?collection=articles&id=1&exp=1&sig=00");
+  await r.body?.cancel();
+  ok("preview: an unsigned link is refused", r.status === 403 || r.status === 404, String(r.status));
+  ok("preview: never cached", (r.headers.get("cache-control") ?? "").includes("no-store"));
+  const fa = (r.headers.get("content-security-policy") ?? "").match(/frame-ancestors ([^;]+)/)?.[1] ?? "";
+  ok("preview: framed by the CMS only", fa === "'none'" || /^https?:\/\/[^\s']+$/.test(fa), fa);
+  const h = await get("/");
+  await h.body?.cancel();
+  ok("home: never framed", (h.headers.get("content-security-policy") ?? "").includes("frame-ancestors 'none'"));
+}
+
 // 3. guard: cross-site and size refusals
 {
   const r = await get("/connexion", {

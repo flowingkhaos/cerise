@@ -28,6 +28,7 @@ export interface CmsDoc {
   body: string;
   hero?: Media | number | null;
   translationOf?: { id: number; slug: string } | number | null;
+  domain?: { slug: string } | number | null;
 }
 
 /** A CMS article, rendered: the same shape the article page gets from the store. */
@@ -212,6 +213,39 @@ export function createCms(o: Options) {
 }
 
 export type Cms = ReturnType<typeof createCms>;
+
+// --- Live preview (README § Live preview) -------------------------------------------------------
+// The CMS admin frames /preview through a link it signed; the four values go back to the CMS, which
+// checks the signature and answers the latest draft. This site holds no secret and caches nothing.
+
+const PREVIEW_KEYS = ["collection", "id", "exp", "sig"];
+
+/** The draft a signed preview link names: 200 with the doc, else 403, 404 or 503. Only our articles. */
+export async function readPreview(
+  base: string | undefined,
+  params: URLSearchParams,
+  fetchFn: typeof fetch = fetch,
+): Promise<{ status: number; doc?: CmsDoc }> {
+  if (!base || params.get("collection") !== "articles") return { status: 404 };
+  const q = new URLSearchParams(PREVIEW_KEYS.map((k) => [k, params.get(k) ?? ""]));
+  try {
+    const r = await fetchFn(`${base}/api/preview?${q}`, {
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(15_000), // a cold start takes ~6 s
+    });
+    if (!r.ok) {
+      await r.body?.cancel();
+      return { status: r.status === 403 || r.status === 404 ? r.status : 503 };
+    }
+    const doc = await r.json() as CmsDoc;
+    // A signed link to another site's article is not ours to show.
+    const ours = typeof doc.domain === "object" && doc.domain?.slug === DOMAIN;
+    return ours ? { status: 200, doc } : { status: 404 };
+  } catch (e) {
+    console.error(`cms preview: ${e}`);
+    return { status: 503 };
+  }
+}
 
 let current: Cms | undefined;
 
